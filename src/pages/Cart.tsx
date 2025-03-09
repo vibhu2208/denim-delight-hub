@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Minus, Plus, Trash2, ShoppingBag, ChevronRight, Tag, CreditCard, Shield } from 'lucide-react';
@@ -8,37 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-
-// Types
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-  size: string;
-}
+import { useCart } from '@/context/CartContext';
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: "Classic Straight Leg Jeans",
-      price: 89.99,
-      image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
-      quantity: 1,
-      size: "32"
-    },
-    {
-      id: 6,
-      name: "Wide-Leg Cropped Jeans",
-      price: 84.99,
-      image: "https://images.unsplash.com/photo-1604176424472-17cd740f74e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
-      quantity: 2,
-      size: "28"
-    }
-  ]);
-  
+  const { cartItems, updateQuantity, removeFromCart } = useCart();
   const [promoCode, setPromoCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState<{code: string, amount: number} | null>(null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -48,21 +20,6 @@ const Cart = () => {
   const shipping = subtotal > 150 ? 0 : 9.99;
   const discount = appliedDiscount ? appliedDiscount.amount : 0;
   const total = subtotal + shipping - discount;
-
-  // Handle quantity change
-  const updateQuantity = (id: number, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    
-    setCartItems(cartItems.map(item => 
-      item.id === id ? { ...item, quantity: newQuantity } : item
-    ));
-  };
-
-  // Remove item from cart
-  const removeItem = (id: number) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
-    toast.success("Item removed from cart");
-  };
 
   // Apply promo code
   const applyPromoCode = () => {
@@ -98,7 +55,6 @@ const Cart = () => {
     setTimeout(() => {
       setIsCheckingOut(false);
       toast.success("Order placed successfully!");
-      setCartItems([]);
     }, 1500);
   };
 
@@ -198,7 +154,7 @@ const Cart = () => {
                               </div>
                               
                               <button 
-                                onClick={() => removeItem(item.id)}
+                                onClick={() => removeFromCart(item.id)}
                                 className="text-denim-500 hover:text-red-500 transition-colors flex items-center text-sm"
                               >
                                 <Trash2 className="w-4 h-4 mr-1" />
@@ -212,6 +168,7 @@ const Cart = () => {
                   </div>
                 </div>
                 
+                {/* Promo code section */}
                 <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-100 p-6">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-medium text-denim-900">
@@ -298,7 +255,7 @@ const Cart = () => {
                   
                   <Button 
                     onClick={handleCheckout}
-                    disabled={isCheckingOut}
+                    disabled={isCheckingOut || cartItems.length === 0}
                     className="w-full bg-denim-900 hover:bg-denim-800 text-white py-6 rounded-full transition-all"
                   >
                     {isCheckingOut ? 'Processing...' : 'Proceed to Checkout'}

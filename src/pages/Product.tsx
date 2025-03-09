@@ -7,6 +7,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Button } from '@/components/ui/button';
 import { Product as ProductType } from '@/components/ProductCard';
+import { useCart } from '@/context/CartContext';
 
 // Mock product data (in a real app this would come from a database)
 const allProducts: ProductType[] = [
@@ -181,6 +182,7 @@ const allProducts: ProductType[] = [
 const Product = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   const [product, setProduct] = useState<ProductType | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -256,8 +258,8 @@ const Product = () => {
       return;
     }
     
-    // In a real app, this would add the product to the cart state/API
-    toast.success(`${product.name} added to your cart`);
+    // Add to cart using the context
+    addToCart(product, quantity, selectedSize);
   };
 
   const handleBuyNow = () => {
@@ -266,9 +268,9 @@ const Product = () => {
       return;
     }
     
-    // In a real app, this would add to cart and redirect to checkout
-    toast.success(`Proceeding to checkout with ${product.name}`);
-    // navigate('/checkout');
+    // Add to cart and navigate to cart page
+    addToCart(product, quantity, selectedSize);
+    navigate('/cart');
   };
 
   const toggleWishlist = () => {
