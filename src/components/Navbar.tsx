@@ -27,6 +27,9 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
   }, [location]);
 
+  // Sample cart count for demonstration
+  const cartCount = 3;
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -88,11 +91,16 @@ const Navbar = () => {
               <Link to="/account" className="p-2 text-denim-800 hover:text-denim-600 transition-colors">
                 <User className="w-5 h-5" />
               </Link>
-              <Link to="/cart" className="p-2 text-denim-800 hover:text-denim-600 transition-colors">
+              <Link 
+                to="/cart" 
+                className={`p-2 text-denim-800 hover:text-denim-600 transition-colors ${
+                  location.pathname === '/cart' ? 'text-denim-600' : ''
+                }`}
+              >
                 <div className="relative">
                   <ShoppingCart className="w-5 h-5" />
                   <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 bg-denim-700 text-white text-xs rounded-full">
-                    0
+                    {cartCount}
                   </span>
                 </div>
               </Link>
@@ -138,6 +146,12 @@ const Navbar = () => {
               className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors"
             >
               Account
+            </Link>
+            <Link 
+              to="/cart" 
+              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors"
+            >
+              Cart
             </Link>
           </nav>
         </div>
