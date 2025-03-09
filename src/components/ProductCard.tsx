@@ -12,6 +12,11 @@ export interface Product {
   category: string;
   isNew?: boolean;
   isBestSeller?: boolean;
+  description?: string;
+  details?: string[];
+  sizes?: string[];
+  reviews?: number;
+  rating?: number;
 }
 
 interface ProductCardProps {
