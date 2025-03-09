@@ -2,11 +2,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, ShoppingCart, Menu, X, User } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { useCart } from '@/context/CartContext';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
+  const { cartItems } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,9 +30,6 @@ const Navbar = () => {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location]);
-
-  // Sample cart count for demonstration
-  const cartCount = 3;
 
   return (
     <header
@@ -88,9 +89,16 @@ const Navbar = () => {
               <button className="p-2 text-denim-800 hover:text-denim-600 transition-colors" aria-label="Search">
                 <Search className="w-5 h-5" />
               </button>
-              <Link to="/account" className="p-2 text-denim-800 hover:text-denim-600 transition-colors">
+              
+              <Link 
+                to={user ? "/account" : "/login"} 
+                className={`p-2 text-denim-800 hover:text-denim-600 transition-colors ${
+                  location.pathname === '/account' || location.pathname === '/login' ? 'text-denim-600' : ''
+                }`}
+              >
                 <User className="w-5 h-5" />
               </Link>
+              
               <Link 
                 to="/cart" 
                 className={`p-2 text-denim-800 hover:text-denim-600 transition-colors ${
@@ -99,9 +107,11 @@ const Navbar = () => {
               >
                 <div className="relative">
                   <ShoppingCart className="w-5 h-5" />
-                  <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 bg-denim-700 text-white text-xs rounded-full">
-                    {cartCount}
-                  </span>
+                  {cartItems.length > 0 && (
+                    <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 bg-denim-700 text-white text-xs rounded-full">
+                      {cartItems.length}
+                    </span>
+                  )}
                 </div>
               </Link>
             </div>
@@ -142,10 +152,10 @@ const Navbar = () => {
               Shop All
             </Link>
             <Link 
-              to="/account" 
+              to={user ? "/account" : "/login"}
               className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors"
             >
-              Account
+              {user ? 'My Account' : 'Sign In'}
             </Link>
             <Link 
               to="/cart" 
