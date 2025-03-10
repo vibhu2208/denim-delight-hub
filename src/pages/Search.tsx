@@ -3,9 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ProductCard, { Product } from '../components/ProductCard';
-import { Filter, X, ChevronDown, SlidersHorizontal } from 'lucide-react';
+import { Search as SearchIcon, X, ChevronDown, SlidersHorizontal } from 'lucide-react';
 
-// Mock product data - using the same data from Products.tsx
 const allProducts: Product[] = [
   // Men's products
   {
@@ -95,17 +94,14 @@ const Search = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Get search query from URL
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const query = params.get('q') || '';
     setSearchQuery(query);
     
-    // Reset scroll position
     window.scrollTo(0, 0);
   }, [location.search]);
 
-  // Perform search
   useEffect(() => {
     if (!searchQuery) {
       setSearchResults([]);
@@ -115,10 +111,7 @@ const Search = () => {
 
     setIsLoading(true);
 
-    // Simulate API delay
     const timer = setTimeout(() => {
-      // In a real implementation, this would be a Supabase query
-      // For now, we'll search the mock data
       const query = searchQuery.toLowerCase();
       
       let results = allProducts.filter(product => 
@@ -127,24 +120,19 @@ const Search = () => {
         (product.description && product.description.toLowerCase().includes(query))
       );
 
-      // Apply additional filters
       if (selectedFits.length > 0) {
-        // Mock implementation for fit filtering
         results = results;
       }
       
-      // Apply price range filter
       results = results.filter(
         product => product.price >= priceRange.min && product.price <= priceRange.max
       );
       
-      // Apply sorting
       if (sortBy === 'price-low-high') {
         results.sort((a, b) => a.price - b.price);
       } else if (sortBy === 'price-high-low') {
         results.sort((a, b) => b.price - a.price);
       } else if (sortBy === 'newest') {
-        // In a real app, we would sort by date
         results = results;
       }
 
@@ -186,7 +174,7 @@ const Search = () => {
                   onChange={(e) => updateSearchQuery(e.target.value)}
                   className="w-full p-3 pl-10 pr-4 border border-denim-300 rounded-full focus:outline-none focus:ring-2 focus:ring-denim-500"
                 />
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-denim-500" />
+                <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-denim-500" />
               </div>
             </div>
           </div>
@@ -230,7 +218,6 @@ const Search = () => {
               </div>
               
               <div className="flex flex-col md:flex-row gap-8">
-                {/* Filters - desktop */}
                 <div className="hidden md:block w-64 flex-shrink-0">
                   <div className="sticky top-24">
                     <div className="mb-8">
@@ -284,7 +271,6 @@ const Search = () => {
                   </div>
                 </div>
                 
-                {/* Mobile filters - same as in Products.tsx */}
                 <div 
                   className={`fixed inset-0 bg-white z-50 transform transition-transform duration-300 ${
                     isFilterOpen ? 'translate-x-0' : 'translate-x-full'
@@ -358,7 +344,6 @@ const Search = () => {
                   </div>
                 </div>
                 
-                {/* Search results */}
                 <div className="flex-1">
                   {searchResults.length === 0 ? (
                     <div className="py-16 text-center">

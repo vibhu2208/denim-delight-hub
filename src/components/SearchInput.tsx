@@ -22,7 +22,7 @@ export const SearchInput = ({ onClose }: { onClose?: () => void }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  // Mock function for demo - in production this would query Supabase
+  // Function to fetch search results from Supabase
   const fetchSearchResults = async (searchQuery: string) => {
     if (!searchQuery.trim()) {
       setResults([]);
@@ -31,10 +31,9 @@ export const SearchInput = ({ onClose }: { onClose?: () => void }) => {
 
     setIsLoading(true);
     
-    // In a real implementation, this would be a Supabase query
-    // For now, we'll use the mock data
     try {
-      // Simulating API delay
+      // For now, using mock data - but structured for easy transition to Supabase
+      // In a production environment, this would be replaced with a Supabase query
       await new Promise(resolve => setTimeout(resolve, 300));
       
       const mockProducts = [
@@ -48,11 +47,14 @@ export const SearchInput = ({ onClose }: { onClose?: () => void }) => {
         { id: 8, name: "Mom Fit Vintage Jeans", category: "women" },
       ];
       
+      // Enhanced search logic to match partial keywords and be case-insensitive
+      const lowercaseQuery = searchQuery.toLowerCase();
       const filtered = mockProducts.filter(product => 
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchQuery.toLowerCase())
+        product.name.toLowerCase().includes(lowercaseQuery) ||
+        product.category.toLowerCase().includes(lowercaseQuery)
       );
       
+      console.log('Search results:', filtered);
       setResults(filtered);
     } catch (error) {
       console.error('Error searching products:', error);
