@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 
 export interface Product {
-  id: number;
+  id: number | string;  // Updated to accept both number and string to be more flexible
   name: string;
   price: number;
   image: string;
@@ -17,6 +17,7 @@ export interface Product {
   sizes?: string[];
   reviews?: number;
   rating?: number;
+  stock?: number;
 }
 
 interface ProductCardProps {

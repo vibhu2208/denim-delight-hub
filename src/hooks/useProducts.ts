@@ -47,7 +47,20 @@ export const useProducts = (options?: {
         throw error;
       }
 
-      return data as Product[];
+      // Map the Supabase product schema to our frontend Product interface
+      return data.map(item => ({
+        id: parseInt(item.id), // Convert UUID to number for frontend
+        name: item.name,
+        price: item.price,
+        image: item.image_url, // Map image_url to image
+        hoverImage: item.hover_image_url, // Map hover_image_url to hoverImage
+        category: item.category,
+        isNew: item.is_new, // Map is_new to isNew
+        isBestSeller: item.is_best_seller, // Map is_best_seller to isBestSeller
+        description: item.description,
+        sizes: item.sizes,
+        stock: item.stock
+      })) as Product[];
     }
   });
 };
