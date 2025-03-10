@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 
 export interface Product {
-  id: number | string;  // Updated to accept both number and string to be more flexible
+  id: string;  // Updated to only use string to match Supabase UUID
   name: string;
   price: number;
   image: string;

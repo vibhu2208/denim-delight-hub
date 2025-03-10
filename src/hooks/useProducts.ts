@@ -48,8 +48,8 @@ export const useProducts = (options?: {
       }
 
       // Map the Supabase product schema to our frontend Product interface
-      return data.map(item => ({
-        id: parseInt(item.id), // Convert UUID to number for frontend
+      return data.map((item: any) => ({
+        id: item.id, // Keep the UUID as string
         name: item.name,
         price: item.price,
         image: item.image_url, // Map image_url to image

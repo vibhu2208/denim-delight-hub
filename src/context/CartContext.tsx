@@ -4,7 +4,7 @@ import { Product } from '@/components/ProductCard';
 import { toast } from 'sonner';
 
 export interface CartItem {
-  id: number;
+  id: string; // Updated to string to match Supabase UUID
   name: string;
   price: number;
   image: string;
@@ -15,8 +15,8 @@ export interface CartItem {
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (product: Product, quantity: number, size: string) => void;
-  removeFromCart: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  removeFromCart: (id: string) => void; // Updated to string
+  updateQuantity: (id: string, quantity: number) => void; // Updated to string
   clearCart: () => void;
 }
 
@@ -27,8 +27,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addToCart = (product: Product, quantity: number, size: string) => {
     setCartItems(prevItems => {
-      // Ensure product.id is converted to number
-      const productId = typeof product.id === 'string' ? parseInt(product.id) : product.id;
+      // Convert product.id to string if it's not already
+      const productId = String(product.id);
       
       // Check if the item already exists in the cart with the same size
       const existingItemIndex = prevItems.findIndex(
@@ -56,12 +56,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     toast.success(`${product.name} added to your cart`);
   };
 
-  const removeFromCart = (id: number) => {
+  const removeFromCart = (id: string) => {
     setCartItems(prevItems => prevItems.filter(item => item.id !== id));
     toast.success("Item removed from cart");
   };
 
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (id: string, quantity: number) => {
     if (quantity < 1) return;
     
     setCartItems(prevItems => 
