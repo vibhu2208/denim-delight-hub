@@ -9,12 +9,64 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      products: {
+        Row: {
+          category: string
+          color: string | null
+          created_at: string | null
+          description: string | null
+          hover_image_url: string | null
+          id: string
+          image_url: string | null
+          is_best_seller: boolean | null
+          is_new: boolean | null
+          name: string
+          price: number
+          sizes: string[]
+          stock: number
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          hover_image_url?: string | null
+          id?: string
+          image_url?: string | null
+          is_best_seller?: boolean | null
+          is_new?: boolean | null
+          name: string
+          price: number
+          sizes: string[]
+          stock?: number
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          hover_image_url?: string | null
+          id?: string
+          image_url?: string | null
+          is_best_seller?: boolean | null
+          is_new?: boolean | null
+          name?: string
+          price?: number
+          sizes?: string[]
+          stock?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           created_at: string
           id: string
           name: string | null
+          role: string | null
           updated_at: string
         }
         Insert: {
@@ -22,6 +74,7 @@ export type Database = {
           created_at?: string
           id: string
           name?: string | null
+          role?: string | null
           updated_at?: string
         }
         Update: {
@@ -29,6 +82,7 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string | null
+          role?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -38,7 +92,52 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      gtrgm_compress: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      gtrgm_decompress: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      gtrgm_in: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      gtrgm_options: {
+        Args: {
+          "": unknown
+        }
+        Returns: undefined
+      }
+      gtrgm_out: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      set_limit: {
+        Args: {
+          "": number
+        }
+        Returns: number
+      }
+      show_limit: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      show_trgm: {
+        Args: {
+          "": string
+        }
+        Returns: string[]
+      }
     }
     Enums: {
       [_ in never]: never

@@ -1,92 +1,14 @@
-
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import ProductCard, { Product } from '../components/ProductCard';
+import ProductCard from '../components/ProductCard';
 import { Filter, X, ChevronDown } from 'lucide-react';
-
-// Mock product data
-const allProducts: Product[] = [
-  // Men's products
-  {
-    id: 1,
-    name: "Classic Straight Leg Jeans",
-    price: 89.99,
-    image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
-    hoverImage: "https://images.unsplash.com/photo-1475178626620-a4d074967452?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=986&q=80",
-    category: "men",
-    isBestSeller: true
-  },
-  {
-    id: 2,
-    name: "Relaxed Tapered Jeans",
-    price: 94.99,
-    image: "https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1009&q=80",
-    hoverImage: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-    category: "men"
-  },
-  {
-    id: 3,
-    name: "Slim Fit Dark Wash Jeans",
-    price: 84.99,
-    image: "https://images.unsplash.com/photo-1530286910461-6a1960d1e83a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-    category: "men",
-    isNew: true
-  },
-  {
-    id: 4,
-    name: "Loose Fit Distressed Jeans",
-    price: 99.99,
-    image: "https://images.unsplash.com/photo-1590503033123-5d1fb3717b91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
-    category: "men"
-  },
-  // Women's products
-  {
-    id: 5,
-    name: "High-Rise Slim Fit Jeans",
-    price: 79.99,
-    image: "https://images.unsplash.com/photo-1584370848010-d7fe6bc767ec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
-    hoverImage: "https://images.unsplash.com/photo-1608234807905-4466023792f5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=997&q=80",
-    category: "women",
-    isNew: true
-  },
-  {
-    id: 6,
-    name: "Wide-Leg Cropped Jeans",
-    price: 84.99,
-    image: "https://images.unsplash.com/photo-1604176424472-17cd740f74e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
-    hoverImage: "https://images.unsplash.com/photo-1548615661-5d58c8af8d95?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2063&q=80",
-    category: "women",
-    isBestSeller: true
-  },
-  {
-    id: 7,
-    name: "Skinny High-Waisted Jeans",
-    price: 74.99,
-    image: "https://images.unsplash.com/photo-1551854838-212c50b4c184?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
-    category: "women"
-  },
-  {
-    id: 8,
-    name: "Mom Fit Vintage Jeans",
-    price: 89.99,
-    image: "https://images.unsplash.com/photo-1593091861575-0c2eab54a6fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
-    category: "women",
-    isNew: true
-  }
-];
-
-// New products
-const newProducts = allProducts.filter(product => product.isNew);
-
-// Best sellers
-const bestSellerProducts = allProducts.filter(product => product.isBestSeller);
+import { useProducts } from '@/hooks/useProducts';
 
 const Products = () => {
   const location = useLocation();
   const [category, setCategory] = useState<string | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState('recommended');
   const [priceRange, setPriceRange] = useState({ min: 0, max: 200 });
@@ -96,54 +18,17 @@ const Products = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const categoryParam = params.get('category');
-    
     setCategory(categoryParam);
-    
-    // Reset scroll position
     window.scrollTo(0, 0);
   }, [location]);
 
-  // Filter products based on category
-  useEffect(() => {
-    let filteredProducts = [...allProducts];
-    
-    if (category === 'men') {
-      filteredProducts = allProducts.filter(product => product.category === 'men');
-    } else if (category === 'women') {
-      filteredProducts = allProducts.filter(product => product.category === 'women');
-    } else if (category === 'new') {
-      filteredProducts = newProducts;
-    } else if (category === 'bestsellers') {
-      filteredProducts = bestSellerProducts;
-    }
-    
-    // Apply additional filters
-    if (selectedFits.length > 0) {
-      // Mock implementation - in a real app, products would have a "fit" property
-      // This is just for demonstration
-      const fitFilteredProducts = [...filteredProducts];
-      filteredProducts = fitFilteredProducts;
-    }
-    
-    // Apply price range filter
-    filteredProducts = filteredProducts.filter(
-      product => product.price >= priceRange.min && product.price <= priceRange.max
-    );
-    
-    // Apply sorting
-    if (sortBy === 'price-low-high') {
-      filteredProducts.sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'price-high-low') {
-      filteredProducts.sort((a, b) => b.price - a.price);
-    } else if (sortBy === 'newest') {
-      // Mock implementation - in a real app, products would have a "createdAt" property
-      // This is just for demonstration
-      const sortedProducts = [...filteredProducts];
-      filteredProducts = sortedProducts;
-    }
-    
-    setProducts(filteredProducts);
-  }, [category, sortBy, priceRange, selectedFits]);
+  // Fetch products using the new hook
+  const { data: products = [], isLoading } = useProducts({
+    category,
+    sortBy,
+    priceRange,
+    selectedFits
+  });
 
   const toggleFit = (fit: string) => {
     if (selectedFits.includes(fit)) {
@@ -206,7 +91,6 @@ const Products = () => {
           </div>
           
           <div className="flex flex-col md:flex-row gap-8">
-            {/* Filters - desktop */}
             <div className="hidden md:block w-64 flex-shrink-0">
               <div className="sticky top-24">
                 <div className="mb-8">
@@ -260,7 +144,6 @@ const Products = () => {
               </div>
             </div>
             
-            {/* Mobile filters */}
             <div 
               className={`fixed inset-0 bg-white z-50 transform transition-transform duration-300 ${
                 isFilterOpen ? 'translate-x-0' : 'translate-x-full'
@@ -334,9 +217,18 @@ const Products = () => {
               </div>
             </div>
             
-            {/* Products grid */}
             <div className="flex-1">
-              {products.length === 0 ? (
+              {isLoading ? (
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                    <div key={n} className="animate-pulse">
+                      <div className="bg-gray-200 rounded-lg aspect-[3/4] mb-4"></div>
+                      <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : products.length === 0 ? (
                 <div className="py-16 text-center">
                   <p className="text-denim-600 mb-4">No products found matching your criteria.</p>
                   <button 
