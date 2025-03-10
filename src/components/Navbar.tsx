@@ -4,10 +4,12 @@ import { Link, useLocation } from 'react-router-dom';
 import { Search, ShoppingCart, Menu, X, User } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
+import { SearchInput } from './SearchInput';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
   const { user } = useAuth();
   const { cartItems } = useCart();
@@ -29,6 +31,7 @@ const Navbar = () => {
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
+    setIsSearchOpen(false);
   }, [location]);
 
   return (
@@ -86,7 +89,11 @@ const Navbar = () => {
           
           <div className="flex-1 flex justify-end">
             <div className="flex items-center space-x-2 md:space-x-4">
-              <button className="p-2 text-denim-800 hover:text-denim-600 transition-colors" aria-label="Search">
+              <button 
+                className="p-2 text-denim-800 hover:text-denim-600 transition-colors" 
+                aria-label="Search"
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+              >
                 <Search className="w-5 h-5" />
               </button>
               
@@ -119,6 +126,21 @@ const Navbar = () => {
         </div>
       </div>
       
+      {/* Search overlay */}
+      {isSearchOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-24 px-4 animate-fade-in">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-medium">Search Products</h2>
+              <button onClick={() => setIsSearchOpen(false)}>
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <SearchInput onClose={() => setIsSearchOpen(false)} />
+          </div>
+        </div>
+      )}
+      
       {/* Mobile Menu */}
       <div 
         className={`fixed inset-0 bg-white z-40 transform transition-transform duration-300 ease-in-out ${
@@ -150,6 +172,12 @@ const Navbar = () => {
               className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors"
             >
               Shop All
+            </Link>
+            <Link 
+              to="/search"
+              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors"
+            >
+              Search
             </Link>
             <Link 
               to={user ? "/account" : "/login"}
