@@ -27,9 +27,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addToCart = (product: Product, quantity: number, size: string) => {
     setCartItems(prevItems => {
+      // Ensure product.id is converted to number
+      const productId = typeof product.id === 'string' ? parseInt(product.id) : product.id;
+      
       // Check if the item already exists in the cart with the same size
       const existingItemIndex = prevItems.findIndex(
-        item => item.id === product.id && item.size === size
+        item => item.id === productId && item.size === size
       );
 
       if (existingItemIndex !== -1) {
@@ -40,7 +43,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       } else {
         // If item doesn't exist, add it to the cart
         return [...prevItems, {
-          id: product.id,
+          id: productId,
           name: product.name,
           price: product.price,
           image: product.image,
