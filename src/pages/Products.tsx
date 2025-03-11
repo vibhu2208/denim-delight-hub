@@ -4,8 +4,10 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Filter, X, ChevronDown } from 'lucide-react';
 import { ProductsGrid } from '@/components/ProductsGrid';
+import { useJeans } from '@/hooks/useJeans';
 
 const Products = () => {
+  const { data: jeans = [] } = useJeans();
   const location = useLocation();
   const [category, setCategory] = useState<string | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -61,7 +63,7 @@ const Products = () => {
             
             <div className="hidden md:block">
               <p className="text-denim-600">
-                Showing {products.length} products
+                Showing {jeans.length} products
               </p>
             </div>
             
