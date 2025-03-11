@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
@@ -11,6 +12,16 @@ export interface Product {
   description?: string;
   size?: string[];
   stock?: number;
+  
+  // Additional properties needed by other components
+  image?: string; // For backward compatibility
+  hoverImage?: string;
+  isNew?: boolean;
+  isBestSeller?: boolean;
+  details?: string[];
+  sizes?: string[]; // Some components use sizes instead of size
+  reviews?: number;
+  rating?: number;
 }
 
 interface ProductCardProps {
@@ -26,6 +37,9 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
     setImageLoaded(true);
   };
 
+  // Use image_url or fallback to image property for backward compatibility
+  const imageUrl = product.image_url || product.image;
+
   return (
     <div 
       className="group animate-fade-in" 
@@ -37,7 +51,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
         <Link to={`/product/${product.id}`}>
           <div className="relative aspect-[3/4] overflow-hidden">
             <img 
-              src={product.image_url} 
+              src={imageUrl} 
               alt={product.name}
               className={`w-full h-full object-cover transition-all duration-700 ease-out transform ${
                 isHovered ? 'scale-105' : 'scale-100'

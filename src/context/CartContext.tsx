@@ -46,7 +46,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           id: productId,
           name: product.name,
           price: product.price,
-          image: product.image,
+          image: product.image_url || product.image || '', // Use image_url or fallback to image
           quantity,
           size
         }];
