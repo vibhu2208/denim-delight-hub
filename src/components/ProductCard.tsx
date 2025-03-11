@@ -3,20 +3,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 
-export interface Product {
-  id: string;  // Updated to only use string to match Supabase UUID
+interface Product {
+  id: string;
   name: string;
   price: number;
-  image: string;
-  hoverImage?: string;
+  image_url: string;
   category: string;
-  isNew?: boolean;
-  isBestSeller?: boolean;
   description?: string;
-  details?: string[];
-  sizes?: string[];
-  reviews?: number;
-  rating?: number;
+  size?: string[];
   stock?: number;
 }
 
@@ -44,7 +38,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
         <Link to={`/product/${product.id}`}>
           <div className="relative aspect-[3/4] overflow-hidden">
             <img 
-              src={isHovered && product.hoverImage ? product.hoverImage : product.image} 
+              src={product.image_url} 
               alt={product.name}
               className={`w-full h-full object-cover transition-all duration-700 ease-out transform ${
                 isHovered ? 'scale-105' : 'scale-100'
@@ -55,17 +49,6 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
               <div className="absolute inset-0 bg-gray-200 animate-pulse"></div>
             )}
           </div>
-          
-          {product.isNew && (
-            <div className="absolute top-3 left-3 px-3 py-1 bg-white font-medium text-xs uppercase tracking-wider rounded-full">
-              New
-            </div>
-          )}
-          {product.isBestSeller && (
-            <div className="absolute top-3 left-3 px-3 py-1 bg-denim-700 text-white font-medium text-xs uppercase tracking-wider rounded-full">
-              Best Seller
-            </div>
-          )}
         </Link>
         
         <button 
@@ -74,15 +57,6 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
         >
           <Heart className="w-4 h-4" />
         </button>
-        
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white/80 to-transparent p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-          <Link 
-            to={`/product/${product.id}`}
-            className="block w-full text-center py-2 bg-denim-900 text-white rounded-full font-medium text-sm hover:bg-denim-800 transition-colors"
-          >
-            Quick View
-          </Link>
-        </div>
       </div>
       
       <div className="px-1">
