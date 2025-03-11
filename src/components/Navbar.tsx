@@ -44,7 +44,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           <div className="flex-1 flex justify-start">
             <button
-              className="md:hidden flex items-center justify-center p-2 text-denim-800 hover:text-denim-600 transition-colors"
+              className="md:hidden flex items-center justify-center p-2 text-denim-800 hover:text-denim-600 transition-colors min-h-[44px] min-w-[44px]"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle mobile menu"
             >
@@ -90,7 +90,7 @@ const Navbar = () => {
           <div className="flex-1 flex justify-end">
             <div className="flex items-center space-x-2 md:space-x-4">
               <button 
-                className="p-2 text-denim-800 hover:text-denim-600 transition-colors" 
+                className="p-2 text-denim-800 hover:text-denim-600 transition-colors min-h-[44px] min-w-[44px]" 
                 aria-label="Search"
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
               >
@@ -99,23 +99,25 @@ const Navbar = () => {
               
               <Link 
                 to={user ? "/account" : "/login"} 
-                className={`p-2 text-denim-800 hover:text-denim-600 transition-colors ${
+                className={`p-2 text-denim-800 hover:text-denim-600 transition-colors min-h-[44px] min-w-[44px] ${
                   location.pathname === '/account' || location.pathname === '/login' ? 'text-denim-600' : ''
                 }`}
+                aria-label={user ? "My Account" : "Login"}
               >
                 <User className="w-5 h-5" />
               </Link>
               
               <Link 
                 to="/cart" 
-                className={`p-2 text-denim-800 hover:text-denim-600 transition-colors ${
+                className={`p-2 text-denim-800 hover:text-denim-600 transition-colors min-h-[44px] min-w-[44px] ${
                   location.pathname === '/cart' ? 'text-denim-600' : ''
                 }`}
+                aria-label="Cart"
               >
                 <div className="relative">
                   <ShoppingCart className="w-5 h-5" />
                   {cartItems.length > 0 && (
-                    <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 bg-denim-700 text-white text-xs rounded-full">
+                    <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 bg-denim-700 text-white text-xs rounded-full">
                       {cartItems.length}
                     </span>
                   )}
@@ -126,13 +128,17 @@ const Navbar = () => {
         </div>
       </div>
       
-      {/* Search overlay */}
+      {/* Search overlay - optimized for mobile */}
       {isSearchOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-24 px-4 animate-fade-in">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6">
-            <div className="flex justify-between items-center mb-6">
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-20 md:pt-24 px-4 animate-fade-in">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-4 md:p-6">
+            <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-medium">Search Products</h2>
-              <button onClick={() => setIsSearchOpen(false)}>
+              <button 
+                onClick={() => setIsSearchOpen(false)} 
+                className="p-2 min-h-[44px] min-w-[44px]"
+                aria-label="Close search"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -151,43 +157,43 @@ const Navbar = () => {
           <nav className="flex flex-col space-y-6">
             <Link 
               to="/products?category=men" 
-              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors"
+              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors min-h-[44px] flex items-center"
             >
               Men
             </Link>
             <Link 
               to="/products?category=women" 
-              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors"
+              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors min-h-[44px] flex items-center"
             >
               Women
             </Link>
             <Link 
               to="/products?category=new" 
-              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors"
+              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors min-h-[44px] flex items-center"
             >
               New Arrivals
             </Link>
             <Link 
               to="/products" 
-              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors"
+              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors min-h-[44px] flex items-center"
             >
               Shop All
             </Link>
             <Link 
               to="/search"
-              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors"
+              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors min-h-[44px] flex items-center"
             >
               Search
             </Link>
             <Link 
               to={user ? "/account" : "/login"}
-              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors"
+              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors min-h-[44px] flex items-center"
             >
               {user ? 'My Account' : 'Sign In'}
             </Link>
             <Link 
               to="/cart" 
-              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors"
+              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors min-h-[44px] flex items-center"
             >
               Cart
             </Link>

@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Product as ProductType } from '@/components/ProductCard';
 import { useCart } from '@/context/CartContext';
 
-// Mock product data (in a real app this would come from a database)
 const allProducts: ProductType[] = [
   // Men's products
   {
@@ -59,7 +58,7 @@ const allProducts: ProductType[] = [
     image: "https://images.unsplash.com/photo-1530286910461-6a1960d1e83a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
     category: "men",
     isNew: true,
-    description: "Our slim fit dark wash jeans offer a sleek, modern silhouette. The deep indigo wash provides versatile styling options for both casual and dressier occasions. Made with premium stretch denim, these jeans offer comfort and mobility while maintaining their shape.",
+    description: "Our slim fit dark wash jeans offer a sleek, modern silhouette. The deep indigo wash provides versatile styling options for both casual and dressier occasions. Made with premium stretch denim for all-day comfort that holds its shape.",
     details: [
       "94% Cotton, 5% Polyester, 1% Elastane",
       "Machine washable",
@@ -189,9 +188,7 @@ const Product = () => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [mainImage, setMainImage] = useState('');
 
-  // Fetch product data
   useEffect(() => {
-    // In a real app, this would be an API call
     const foundProduct = allProducts.find(p => p.id === id);
     
     if (foundProduct) {
@@ -256,8 +253,8 @@ const Product = () => {
       return;
     }
     
-    // Add to cart using the context
     addToCart(product, quantity, selectedSize);
+    toast.success(`${product.name} added to your cart`);
   };
 
   const handleBuyNow = () => {
@@ -266,7 +263,6 @@ const Product = () => {
       return;
     }
     
-    // Add to cart and navigate to cart page
     addToCart(product, quantity, selectedSize);
     navigate('/cart');
   };
@@ -291,19 +287,17 @@ const Product = () => {
     setQuantity(quantity + 1);
   };
 
-  // Get similar products (products in the same category)
   const similarProducts = allProducts
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white pb-20 md:pb-0">
       <Navbar />
       
       <main className="pt-16 md:pt-20">
         <div className="container mx-auto px-4 py-8 md:py-12">
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-            {/* Product Images */}
             <div className="w-full lg:w-1/2">
               <div className="sticky top-24">
                 <div className="bg-gray-50 rounded-lg overflow-hidden mb-4">
@@ -314,7 +308,6 @@ const Product = () => {
                   />
                 </div>
                 
-                {/* Thumbnail gallery */}
                 <div className="grid grid-cols-4 gap-2">
                   <button 
                     className={`bg-gray-50 rounded-md overflow-hidden ${mainImage === product.image ? 'ring-2 ring-denim-700' : ''}`}
@@ -343,10 +336,8 @@ const Product = () => {
               </div>
             </div>
             
-            {/* Product Details */}
             <div className="w-full lg:w-1/2">
-              {/* Product badges */}
-              <div className="flex mb-4">
+              <div className="flex justify-between items-center mb-4">
                 {product.isNew && (
                   <span className="px-3 py-1 bg-denim-700 text-white font-medium text-xs uppercase tracking-wider rounded-full mr-2">
                     New
@@ -359,10 +350,8 @@ const Product = () => {
                 )}
               </div>
               
-              {/* Product title and price */}
               <h1 className="text-3xl font-display font-semibold text-denim-900 mb-2">{product.name}</h1>
               
-              {/* Ratings */}
               <div className="flex items-center mb-4">
                 <div className="flex">
                   {[1, 2, 3, 4, 5].map((star) => (
@@ -379,12 +368,10 @@ const Product = () => {
               
               <p className="text-2xl font-medium text-denim-900 mb-6">${product.price.toFixed(2)}</p>
               
-              {/* Product description */}
               <div className="mb-8">
                 <p className="text-denim-600">{product.description}</p>
               </div>
               
-              {/* Product details */}
               <div className="mb-8">
                 <h3 className="text-lg font-medium text-denim-900 mb-2">Details</h3>
                 <ul className="list-disc list-inside space-y-1 text-denim-600">
@@ -394,7 +381,6 @@ const Product = () => {
                 </ul>
               </div>
               
-              {/* Size selection */}
               <div className="mb-8">
                 <div className="flex justify-between items-center mb-2">
                   <h3 className="text-lg font-medium text-denim-900">Select Size</h3>
@@ -409,7 +395,7 @@ const Product = () => {
                         selectedSize === size 
                           ? 'border-denim-700 bg-denim-50 text-denim-900' 
                           : 'border-gray-300 text-denim-600 hover:border-denim-400'
-                      } transition-colors`}
+                      } transition-colors min-h-[44px]`}
                       onClick={() => setSelectedSize(size)}
                     >
                       {size}
@@ -418,21 +404,20 @@ const Product = () => {
                 </div>
               </div>
               
-              {/* Quantity selector */}
               <div className="mb-8">
                 <h3 className="text-lg font-medium text-denim-900 mb-2">Quantity</h3>
                 <div className="flex items-center">
                   <button 
-                    className="w-10 h-10 border border-gray-300 rounded-l flex items-center justify-center text-denim-900"
+                    className="w-12 h-12 border border-gray-300 rounded-l flex items-center justify-center text-denim-900"
                     onClick={decreaseQuantity}
                   >
                     -
                   </button>
-                  <div className="w-12 h-10 border-t border-b border-gray-300 flex items-center justify-center text-denim-900">
+                  <div className="w-12 h-12 border-t border-b border-gray-300 flex items-center justify-center text-denim-900">
                     {quantity}
                   </div>
                   <button 
-                    className="w-10 h-10 border border-gray-300 rounded-r flex items-center justify-center text-denim-900"
+                    className="w-12 h-12 border border-gray-300 rounded-r flex items-center justify-center text-denim-900"
                     onClick={increaseQuantity}
                   >
                     +
@@ -440,12 +425,11 @@ const Product = () => {
                 </div>
               </div>
               
-              {/* Action buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Button
                   variant="outline"
                   size="lg"
-                  className="flex-1 h-12 border-denim-700 text-denim-700 hover:bg-denim-50"
+                  className="flex-1 h-14 border-denim-700 text-denim-700 hover:bg-denim-50 min-w-[44px]"
                   onClick={handleAddToCart}
                 >
                   <ShoppingCart className="mr-2 h-5 w-5" />
@@ -455,7 +439,7 @@ const Product = () => {
                 <Button
                   variant="default"
                   size="lg" 
-                  className="flex-1 h-12 bg-denim-800 hover:bg-denim-900"
+                  className="flex-1 h-14 bg-denim-800 hover:bg-denim-900 min-w-[44px]"
                   onClick={handleBuyNow}
                 >
                   Buy Now
@@ -476,7 +460,6 @@ const Product = () => {
                 </Button>
               </div>
               
-              {/* Shipping info */}
               <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 mb-8">
                 <div className="flex items-center mb-3">
                   <Truck className="h-5 w-5 text-denim-700 mr-3" />
@@ -494,7 +477,6 @@ const Product = () => {
             </div>
           </div>
           
-          {/* You may also like section */}
           {similarProducts.length > 0 && (
             <div className="mt-16">
               <h2 className="text-2xl font-display font-semibold text-denim-900 mb-6">You May Also Like</h2>
@@ -539,6 +521,27 @@ const Product = () => {
           )}
         </div>
       </main>
+      
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 flex gap-3 md:hidden shadow-lg z-40">
+        <Button
+          variant="outline"
+          size="lg"
+          className="flex-1 h-14 border-denim-700 text-denim-700 hover:bg-denim-50 min-w-[44px]"
+          onClick={handleAddToCart}
+        >
+          <ShoppingCart className="mr-2 h-5 w-5" />
+          Add to Cart
+        </Button>
+        
+        <Button
+          variant="default"
+          size="lg" 
+          className="flex-1 h-14 bg-denim-800 hover:bg-denim-900 min-w-[44px]"
+          onClick={handleBuyNow}
+        >
+          Buy Now
+        </Button>
+      </div>
       
       <Footer />
     </div>

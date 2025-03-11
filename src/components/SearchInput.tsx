@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, X } from 'lucide-react';
+import { Search, X, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -20,6 +20,7 @@ export const SearchInput = ({ onClose }: { onClose?: () => void }) => {
   const [isLoading, setIsLoading] = useState(false);
   const debouncedQuery = useDebounce(query, 300);
   const inputRef = useRef<HTMLInputElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   // Function to fetch search results from Supabase
@@ -74,6 +75,25 @@ export const SearchInput = ({ onClose }: { onClose?: () => void }) => {
     }
   }, [isOpen]);
 
+  // Handle clicks outside of the search results
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        resultsRef.current && 
+        !resultsRef.current.contains(event.target as Node) &&
+        inputRef.current && 
+        !inputRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
@@ -84,7 +104,7 @@ export const SearchInput = ({ onClose }: { onClose?: () => void }) => {
     }
   };
 
-  const handleResultClick = (id: number) => {
+  const handleResultClick = (id: string) => {
     navigate(`/product/${id}`);
     setQuery('');
     setIsOpen(false);
@@ -105,45 +125,52 @@ export const SearchInput = ({ onClose }: { onClose?: () => void }) => {
       <form onSubmit={handleSearch} className="relative">
         <Input
           ref={inputRef}
-          type="text"
+          type="search"
           placeholder="Search for jeans..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={handleInputFocus}
-          className="w-full pl-10 pr-10"
+          className="w-full h-12 pl-10 pr-10 rounded-full text-base"
         />
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
         {query && (
           <button
             type="button"
             onClick={handleClearSearch}
-            className="absolute right-3 top-1/2 -translate-y-1/2"
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1"
+            aria-label="Clear search"
           >
-            <X className="w-4 h-4 text-gray-500 hover:text-gray-700" />
+            <X className="w-5 h-5 text-gray-500 hover:text-gray-700" />
           </button>
         )}
       </form>
 
       {isOpen && query && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border rounded-md shadow-lg max-h-96 overflow-y-auto z-50">
+        <div 
+          ref={resultsRef}
+          className="absolute top-full left-0 right-0 mt-2 bg-white border rounded-md shadow-lg max-h-[75vh] overflow-y-auto z-50"
+        >
           {isLoading ? (
-            <div className="p-4 text-center text-gray-500">Searching...</div>
+            <div className="p-4 text-center text-gray-500">
+              <Loader2 className="w-5 h-5 mx-auto animate-spin mb-2" />
+              Searching...
+            </div>
           ) : results.length > 0 ? (
             <div className="py-2">
               {results.map((result) => (
                 <button
                   key={result.id}
                   onClick={() => handleResultClick(result.id)}
-                  className="w-full px-4 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition-colors"
+                  className="w-full px-4 py-3 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition-colors min-h-[44px]"
                 >
                   <div className="font-medium text-denim-900">{result.name}</div>
                   <div className="text-sm text-gray-500 capitalize">{result.category}</div>
                 </button>
               ))}
-              <div className="px-4 py-2 border-t">
+              <div className="px-4 py-3 border-t">
                 <button
                   onClick={handleSearch}
-                  className="w-full text-center text-denim-700 font-medium hover:underline"
+                  className="w-full text-center text-denim-700 font-medium hover:underline min-h-[44px]"
                 >
                   See all results for "{query}"
                 </button>
