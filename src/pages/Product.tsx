@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, Star, Truck, RotateCcw, Shield } from 'lucide-react';
@@ -15,6 +16,7 @@ const allProducts: ProductType[] = [
     name: "Classic Straight Leg Jeans",
     price: 89.99,
     image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
+    image_url: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
     hoverImage: "https://images.unsplash.com/photo-1475178626620-a4d074967452?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=986&q=80",
     category: "men",
     isBestSeller: true,
@@ -36,6 +38,7 @@ const allProducts: ProductType[] = [
     name: "Relaxed Tapered Jeans",
     price: 94.99,
     image: "https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1009&q=80",
+    image_url: "https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1009&q=80",
     hoverImage: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
     category: "men",
     description: "Our relaxed tapered jeans combine laid-back comfort with a modern silhouette. The relaxed fit through the seat and thigh tapers down for a contemporary look. Made from premium heavyweight denim that gets better with every wear, these will quickly become your go-to jeans.",
@@ -56,6 +59,7 @@ const allProducts: ProductType[] = [
     name: "Slim Fit Dark Wash Jeans",
     price: 84.99,
     image: "https://images.unsplash.com/photo-1530286910461-6a1960d1e83a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    image_url: "https://images.unsplash.com/photo-1530286910461-6a1960d1e83a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
     category: "men",
     isNew: true,
     description: "Our slim fit dark wash jeans offer a sleek, modern silhouette. The deep indigo wash provides versatile styling options for both casual and dressier occasions. Made with premium stretch denim for all-day comfort that holds its shape.",
@@ -76,6 +80,7 @@ const allProducts: ProductType[] = [
     name: "Loose Fit Distressed Jeans",
     price: 99.99,
     image: "https://images.unsplash.com/photo-1590503033123-5d1fb3717b91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
+    image_url: "https://images.unsplash.com/photo-1590503033123-5d1fb3717b91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
     category: "men",
     description: "Our loose fit distressed jeans embody casual cool with authentic distressing and a relaxed silhouette. Each pair is uniquely worn and faded for a lived-in look. The loose fit provides maximum comfort for all-day wear, while the quality denim ensures durability.",
     details: [
@@ -97,6 +102,7 @@ const allProducts: ProductType[] = [
     name: "High-Rise Slim Fit Jeans",
     price: 79.99,
     image: "https://images.unsplash.com/photo-1584370848010-d7fe6bc767ec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
+    image_url: "https://images.unsplash.com/photo-1584370848010-d7fe6bc767ec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
     hoverImage: "https://images.unsplash.com/photo-1608234807905-4466023792f5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=997&q=80",
     category: "women",
     isNew: true,
@@ -118,6 +124,7 @@ const allProducts: ProductType[] = [
     name: "Wide-Leg Cropped Jeans",
     price: 84.99,
     image: "https://images.unsplash.com/photo-1604176424472-17cd740f74e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
+    image_url: "https://images.unsplash.com/photo-1604176424472-17cd740f74e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
     hoverImage: "https://images.unsplash.com/photo-1548615661-5d58c8af8d95?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2063&q=80",
     category: "women",
     isBestSeller: true,
@@ -140,6 +147,7 @@ const allProducts: ProductType[] = [
     name: "Skinny High-Waisted Jeans",
     price: 74.99,
     image: "https://images.unsplash.com/photo-1551854838-212c50b4c184?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
+    image_url: "https://images.unsplash.com/photo-1551854838-212c50b4c184?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
     category: "women",
     description: "Our skinny high-waisted jeans offer a second-skin fit that flatters your curves. The super stretchy denim provides exceptional comfort and recovery, maintaining its shape wear after wear. The high rise sits at your natural waist for a sleek, elongated silhouette.",
     details: [
@@ -159,6 +167,7 @@ const allProducts: ProductType[] = [
     name: "Mom Fit Vintage Jeans",
     price: 89.99,
     image: "https://images.unsplash.com/photo-1593091861575-0c2eab54a6fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
+    image_url: "https://images.unsplash.com/photo-1593091861575-0c2eab54a6fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
     category: "women",
     isNew: true,
     description: "Our mom fit vintage jeans bring back the iconic 90s silhouette with a modern twist. The high waist and slightly tapered leg create a flattering vintage-inspired look. Made from rigid denim that softens with wear, these jeans develop a unique character that's all your own.",

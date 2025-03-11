@@ -7,7 +7,7 @@ export interface Product {
   id: string;
   name: string;
   price: number;
-  image_url: string;
+  image_url?: string; // Make optional to support both patterns
   category: string;
   description?: string;
   size?: string[];
