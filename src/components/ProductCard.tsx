@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
@@ -7,7 +6,7 @@ export interface Product {
   id: string;
   name: string;
   price: number;
-  image_url?: string; // Make optional to support both patterns
+  image_url?: string; // Optional to support both patterns
   category: string;
   description?: string;
   size?: string[];
@@ -65,7 +64,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
         </Link>
         
         <button 
-          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/70 backdrop-blur-sm text-denim-900 opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/700 backdrop-blur-sm text-denim-900 opacity-0 group-hover:opacity-100 transition-opacity"
           aria-label="Add to wishlist"
         >
           <Heart className="w-4 h-4" />

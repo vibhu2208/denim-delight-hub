@@ -13,7 +13,7 @@ interface SearchResult {
   category: string;
 }
 
-export const SearchInput = ({ onClose }: { onClose?: () => void }) => {
+export const SearchInput = ({ onClose, isFullWidth = false }: { onClose?: () => void, isFullWidth?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -46,6 +46,10 @@ export const SearchInput = ({ onClose }: { onClose?: () => void }) => {
         { id: "6", name: "Wide-Leg Cropped Jeans", category: "women" },
         { id: "7", name: "Skinny High-Waisted Jeans", category: "women" },
         { id: "8", name: "Mom Fit Vintage Jeans", category: "women" },
+        { id: "9", name: "Levi's 501 Original Fit", category: "brands" },
+        { id: "10", name: "Calvin Klein Slim Straight", category: "brands" },
+        { id: "11", name: "Wrangler Retro Slim Boot", category: "brands" },
+        { id: "12", name: "Diesel Sleenker Skinny", category: "brands" },
       ];
       
       // Enhanced search logic to match partial keywords and be case-insensitive
@@ -121,23 +125,24 @@ export const SearchInput = ({ onClose }: { onClose?: () => void }) => {
   };
 
   return (
-    <div className="relative w-full">
+    <div className={`relative ${isFullWidth ? 'w-full' : ''}`}>
       <form onSubmit={handleSearch} className="relative">
-        <Input
+        <input
           ref={inputRef}
           type="search"
-          placeholder="Search for jeans..."
+          placeholder="Search for jeans, brands, and more..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={handleInputFocus}
-          className="w-full h-12 pl-10 pr-10 rounded-full text-base"
+          className="w-full h-12 pl-12 pr-10 rounded-full border border-gray-200 text-base outline-none focus:border-denim-500 focus:ring-1 focus:ring-denim-500 transition-all"
+          autoComplete="off"
         />
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
         {query && (
           <button
             type="button"
             onClick={handleClearSearch}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1"
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 transition-colors"
             aria-label="Clear search"
           >
             <X className="w-5 h-5 text-gray-500 hover:text-gray-700" />
@@ -148,7 +153,7 @@ export const SearchInput = ({ onClose }: { onClose?: () => void }) => {
       {isOpen && query && (
         <div 
           ref={resultsRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-white border rounded-md shadow-lg max-h-[75vh] overflow-y-auto z-50"
+          className="absolute top-full left-0 right-0 mt-2 bg-white border rounded-lg shadow-lg max-h-[80vh] overflow-y-auto z-50"
         >
           {isLoading ? (
             <div className="p-4 text-center text-gray-500">
@@ -161,17 +166,21 @@ export const SearchInput = ({ onClose }: { onClose?: () => void }) => {
                 <button
                   key={result.id}
                   onClick={() => handleResultClick(result.id)}
-                  className="w-full px-4 py-3 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition-colors min-h-[44px]"
+                  className="w-full px-4 py-3 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors flex items-center min-h-[44px]"
                 >
-                  <div className="font-medium text-denim-900">{result.name}</div>
-                  <div className="text-sm text-gray-500 capitalize">{result.category}</div>
+                  <div className="flex-1">
+                    <div className="font-medium text-denim-900">{result.name}</div>
+                    <div className="text-sm text-gray-500 capitalize">in {result.category}</div>
+                  </div>
+                  <Search className="w-4 h-4 text-gray-400 ml-2" />
                 </button>
               ))}
               <div className="px-4 py-3 border-t">
                 <button
                   onClick={handleSearch}
-                  className="w-full text-center text-denim-700 font-medium hover:underline min-h-[44px]"
+                  className="w-full text-center text-denim-700 font-medium hover:underline min-h-[44px] flex items-center justify-center"
                 >
+                  <Search className="w-4 h-4 mr-2" />
                   See all results for "{query}"
                 </button>
               </div>
