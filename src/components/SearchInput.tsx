@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Search, X, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hooks/useDebounce';
 import { supabase } from '@/integrations/supabase/client';
 import { Product } from '@/components/ProductCard';
@@ -18,6 +17,7 @@ export const SearchInput = ({ onClose, isFullWidth = false }: { onClose?: () => 
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const debouncedQuery = useDebounce(query, 300);
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -89,6 +89,7 @@ export const SearchInput = ({ onClose, isFullWidth = false }: { onClose?: () => 
         !inputRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
+        setIsFocused(false);
       }
     };
 
@@ -104,6 +105,7 @@ export const SearchInput = ({ onClose, isFullWidth = false }: { onClose?: () => 
       navigate(`/search?q=${encodeURIComponent(query.trim())}`);
       setQuery('');
       setIsOpen(false);
+      setIsFocused(false);
       if (onClose) onClose();
     }
   };
@@ -112,11 +114,13 @@ export const SearchInput = ({ onClose, isFullWidth = false }: { onClose?: () => 
     navigate(`/product/${id}`);
     setQuery('');
     setIsOpen(false);
+    setIsFocused(false);
     if (onClose) onClose();
   };
 
   const handleInputFocus = () => {
     setIsOpen(true);
+    setIsFocused(true);
   };
 
   const handleClearSearch = () => {
@@ -126,7 +130,10 @@ export const SearchInput = ({ onClose, isFullWidth = false }: { onClose?: () => 
 
   return (
     <div className={`relative ${isFullWidth ? 'w-full' : ''}`}>
-      <form onSubmit={handleSearch} className="relative">
+      <form 
+        onSubmit={handleSearch} 
+        className={`relative transition-all duration-200 ${isFocused ? 'scale-[1.02]' : ''}`}
+      >
         <input
           ref={inputRef}
           type="search"
@@ -134,7 +141,12 @@ export const SearchInput = ({ onClose, isFullWidth = false }: { onClose?: () => 
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={handleInputFocus}
-          className="w-full h-12 pl-12 pr-10 rounded-full border border-gray-200 text-base outline-none focus:border-denim-500 focus:ring-1 focus:ring-denim-500 transition-all"
+          className={`w-full h-12 pl-12 pr-10 rounded-full border border-gray-200 text-base outline-none 
+            ${isFocused 
+              ? 'border-denim-500 shadow-md ring-1 ring-denim-500/20' 
+              : 'hover:border-gray-300 hover:shadow-sm'
+            } 
+            transition-all`}
           autoComplete="off"
         />
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />

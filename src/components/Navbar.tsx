@@ -144,7 +144,7 @@ const Navbar = () => {
         <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-40 py-2 px-3 md:hidden animate-fade-in">
           <button 
             onClick={() => setIsSearchOpen(true)}
-            className="w-full h-10 rounded-full border border-gray-200 px-4 py-2 text-left text-gray-500 flex items-center"
+            className="w-full h-10 rounded-full border border-gray-200 px-4 py-2 text-left text-gray-500 flex items-center shadow-sm hover:shadow transition-shadow"
           >
             <Search className="w-4 h-4 mr-2" />
             <span>Search for jeans, brands, and more...</span>
