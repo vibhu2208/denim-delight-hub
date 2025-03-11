@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -8,7 +9,7 @@ import { Search as SearchIcon, X, ChevronDown, SlidersHorizontal } from 'lucide-
 const allProducts: Product[] = [
   // Men's products
   {
-    id: 1,
+    id: "1",
     name: "Classic Straight Leg Jeans",
     price: 89.99,
     image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
@@ -18,7 +19,7 @@ const allProducts: Product[] = [
     description: "Premium denim straight leg jeans for men with classic fit and comfort."
   },
   {
-    id: 2,
+    id: "2",
     name: "Relaxed Tapered Jeans",
     price: 94.99,
     image: "https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1009&q=80",
@@ -27,7 +28,7 @@ const allProducts: Product[] = [
     description: "Comfortable tapered jeans with a relaxed fit through the thigh."
   },
   {
-    id: 3,
+    id: "3",
     name: "Slim Fit Dark Wash Jeans",
     price: 84.99,
     image: "https://images.unsplash.com/photo-1530286910461-6a1960d1e83a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
@@ -36,7 +37,7 @@ const allProducts: Product[] = [
     description: "Stylish slim fit jeans in a dark wash, perfect for a night out."
   },
   {
-    id: 4,
+    id: "4",
     name: "Loose Fit Distressed Jeans",
     price: 99.99,
     image: "https://images.unsplash.com/photo-1590503033123-5d1fb3717b91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
@@ -45,7 +46,7 @@ const allProducts: Product[] = [
   },
   // Women's products
   {
-    id: 5,
+    id: "5",
     name: "High-Rise Slim Fit Jeans",
     price: 79.99,
     image: "https://images.unsplash.com/photo-1584370848010-d7fe6bc767ec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
@@ -55,7 +56,7 @@ const allProducts: Product[] = [
     description: "Flattering high-rise slim fit jeans for women, perfect for any occasion."
   },
   {
-    id: 6,
+    id: "6",
     name: "Wide-Leg Cropped Jeans",
     price: 84.99,
     image: "https://images.unsplash.com/photo-1604176424472-17cd740f74e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
@@ -65,7 +66,7 @@ const allProducts: Product[] = [
     description: "Trendy wide-leg cropped jeans for women, offering style and comfort."
   },
   {
-    id: 7,
+    id: "7",
     name: "Skinny High-Waisted Jeans",
     price: 74.99,
     image: "https://images.unsplash.com/photo-1551854838-212c50b4c184?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
@@ -73,7 +74,7 @@ const allProducts: Product[] = [
     description: "Classic skinny high-waisted jeans for women, a wardrobe staple."
   },
   {
-    id: 8,
+    id: "8",
     name: "Mom Fit Vintage Jeans",
     price: 89.99,
     image: "https://images.unsplash.com/photo-1593091861575-0c2eab54a6fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",

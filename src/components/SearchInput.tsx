@@ -8,7 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Product } from '@/components/ProductCard';
 
 interface SearchResult {
-  id: number;
+  id: string;
   name: string;
   category: string;
 }
@@ -37,14 +37,14 @@ export const SearchInput = ({ onClose }: { onClose?: () => void }) => {
       await new Promise(resolve => setTimeout(resolve, 300));
       
       const mockProducts = [
-        { id: 1, name: "Classic Straight Leg Jeans", category: "men" },
-        { id: 2, name: "Relaxed Tapered Jeans", category: "men" },
-        { id: 3, name: "Slim Fit Dark Wash Jeans", category: "men" },
-        { id: 4, name: "Loose Fit Distressed Jeans", category: "men" },
-        { id: 5, name: "High-Rise Slim Fit Jeans", category: "women" },
-        { id: 6, name: "Wide-Leg Cropped Jeans", category: "women" },
-        { id: 7, name: "Skinny High-Waisted Jeans", category: "women" },
-        { id: 8, name: "Mom Fit Vintage Jeans", category: "women" },
+        { id: "1", name: "Classic Straight Leg Jeans", category: "men" },
+        { id: "2", name: "Relaxed Tapered Jeans", category: "men" },
+        { id: "3", name: "Slim Fit Dark Wash Jeans", category: "men" },
+        { id: "4", name: "Loose Fit Distressed Jeans", category: "men" },
+        { id: "5", name: "High-Rise Slim Fit Jeans", category: "women" },
+        { id: "6", name: "Wide-Leg Cropped Jeans", category: "women" },
+        { id: "7", name: "Skinny High-Waisted Jeans", category: "women" },
+        { id: "8", name: "Mom Fit Vintage Jeans", category: "women" },
       ];
       
       // Enhanced search logic to match partial keywords and be case-insensitive
