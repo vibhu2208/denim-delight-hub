@@ -2,17 +2,17 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
-interface Jean {
+export interface Jean {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
   price: number;
   size: string[];
-  color: string;
-  category: string;
-  image_url: string;
+  color: string | null;
+  category: string | null;
+  image_url: string | null;
   stock: number;
-  created_at: string;
+  created_at: string | null;
 }
 
 export const useJeans = () => {
@@ -21,7 +21,8 @@ export const useJeans = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('jeans')
-        .select('*');
+        .select('*')
+        .order('created_at', { ascending: false });
 
       if (error) {
         throw error;
