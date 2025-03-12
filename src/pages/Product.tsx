@@ -11,6 +11,8 @@ import { useWishlist } from '@/context/WishlistContext';
 import { useJean } from '@/hooks/useJean';
 import ProductCard from '@/components/ProductCard';
 import { useJeans } from '@/hooks/useJeans';
+import CollapsibleSection from '@/components/CollapsibleSection';
+import { Separator } from '@/components/ui/separator';
 
 const Product = () => {
   const { id } = useParams<{ id: string }>();
@@ -167,12 +169,6 @@ const Product = () => {
               
               <p className="text-2xl font-medium text-denim-900 mb-6">${product.price.toFixed(2)}</p>
               
-              {product.description && (
-                <div className="mb-8">
-                  <p className="text-denim-600">{product.description}</p>
-                </div>
-              )}
-              
               {product.size && product.size.length > 0 && (
                 <div className="mb-8">
                   <div className="flex justify-between items-center mb-2">
@@ -267,6 +263,120 @@ const Product = () => {
                   <Shield className="h-5 w-5 text-denim-700 mr-3" />
                   <p className="text-denim-700 font-medium">1-year warranty</p>
                 </div>
+              </div>
+              
+              {/* Product Details Collapsible Sections */}
+              <div className="mt-8 mb-10">
+                <CollapsibleSection title="Specifications" defaultOpen={true}>
+                  <dl className="grid grid-cols-2 gap-x-4 gap-y-2">
+                    <dt className="text-denim-600">Fabric</dt>
+                    <dd className="text-denim-900">100% Cotton Denim</dd>
+                    
+                    <dt className="text-denim-600">Fit</dt>
+                    <dd className="text-denim-900">Regular Fit</dd>
+                    
+                    <dt className="text-denim-600">Pockets</dt>
+                    <dd className="text-denim-900">5 Pockets</dd>
+                    
+                    <dt className="text-denim-600">Waist Rise</dt>
+                    <dd className="text-denim-900">Mid-Rise</dd>
+                    
+                    <dt className="text-denim-600">Style</dt>
+                    <dd className="text-denim-900">Casual</dd>
+                    
+                    <dt className="text-denim-600">Color</dt>
+                    <dd className="text-denim-900">{product.color || 'Dark Blue'}</dd>
+                  </dl>
+                </CollapsibleSection>
+                
+                <CollapsibleSection title="Description">
+                  <div className="text-denim-600 space-y-4">
+                    <p>{product.description || 'Premium quality jeans made with sustainable materials and expert craftsmanship for lasting comfort and style.'}</p>
+                    <p>These versatile jeans feature a classic five-pocket design and are perfect for everyday wear. The durable construction ensures they'll last through countless wears and washes while maintaining their shape and color.</p>
+                  </div>
+                </CollapsibleSection>
+                
+                <CollapsibleSection title="Returns, Exchange, & Refund Policy">
+                  <div className="text-denim-600 space-y-4">
+                    <p>We offer a 30-day return policy on all unworn items with original tags attached.</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li>Items must be in original condition with all tags attached</li>
+                      <li>Returns must be initiated within 30 days of delivery</li>
+                      <li>Exchanges are subject to availability</li>
+                      <li>Refunds will be processed to the original payment method</li>
+                    </ul>
+                  </div>
+                </CollapsibleSection>
+                
+                <CollapsibleSection title="Marketed By">
+                  <div className="text-denim-600">
+                    <p className="mb-2"><strong>Denim Co.</strong></p>
+                    <p>123 Fashion Street</p>
+                    <p>New York, NY 10001</p>
+                    <p>United States</p>
+                    <p className="mt-2">Customer Service: 1-800-DENIM-CO</p>
+                  </div>
+                </CollapsibleSection>
+                
+                <CollapsibleSection title="Ratings & Reviews">
+                  <div className="space-y-4">
+                    <div className="flex items-center">
+                      <div className="flex items-center">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star 
+                            key={star} 
+                            className={`h-5 w-5 ${star <= 4 ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} 
+                          />
+                        ))}
+                      </div>
+                      <p className="ml-2 text-denim-900 font-medium">4.0 out of 5</p>
+                    </div>
+                    
+                    <p className="text-denim-600">Based on 24 reviews</p>
+                    
+                    <Separator />
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex items-center mb-1">
+                          <p className="font-medium text-denim-900">Sarah K.</p>
+                          <div className="ml-4 flex">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Star 
+                                key={star} 
+                                className={`h-4 w-4 ${star <= 5 ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} 
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-sm text-denim-500 mb-2">Verified Purchase - June 12, 2023</p>
+                        <p className="text-denim-600">Perfect fit and very comfortable. The material is high quality and has held up well after several washes.</p>
+                      </div>
+                      
+                      <Separator />
+                      
+                      <div>
+                        <div className="flex items-center mb-1">
+                          <p className="font-medium text-denim-900">Michael T.</p>
+                          <div className="ml-4 flex">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Star 
+                                key={star} 
+                                className={`h-4 w-4 ${star <= 4 ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} 
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-sm text-denim-500 mb-2">Verified Purchase - May 3, 2023</p>
+                        <p className="text-denim-600">Great jeans, but they run a bit large. I would recommend sizing down if you're between sizes.</p>
+                      </div>
+                    </div>
+                    
+                    <Button variant="outline" className="w-full mt-2">
+                      View All Reviews
+                    </Button>
+                  </div>
+                </CollapsibleSection>
               </div>
             </div>
           </div>
