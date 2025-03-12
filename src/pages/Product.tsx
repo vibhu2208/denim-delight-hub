@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, Star, Truck, RotateCcw, Shield } from 'lucide-react';
@@ -8,6 +7,7 @@ import Footer from '../components/Footer';
 import { Button } from '@/components/ui/button';
 import { Product as ProductType } from '@/components/ProductCard';
 import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 
 const allProducts: ProductType[] = [
   // Men's products
@@ -190,11 +190,11 @@ const Product = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [product, setProduct] = useState<ProductType | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [mainImage, setMainImage] = useState('');
 
   useEffect(() => {
@@ -207,6 +207,10 @@ const Product = () => {
     
     setLoading(false);
   }, [id]);
+
+  useEffect(() => {
+    localStorage.setItem('allProducts', JSON.stringify(allProducts));
+  }, []);
 
   if (loading) {
     return (
@@ -256,6 +260,8 @@ const Product = () => {
     );
   }
 
+  const isWishlisted = isInWishlist(product.id);
+
   const handleAddToCart = () => {
     if (!selectedSize) {
       toast.error("Please select a size");
@@ -277,12 +283,10 @@ const Product = () => {
   };
 
   const toggleWishlist = () => {
-    setIsWishlisted(!isWishlisted);
-    
-    if (!isWishlisted) {
-      toast.success(`${product.name} added to your wishlist`);
+    if (isWishlisted) {
+      removeFromWishlist(product.id);
     } else {
-      toast.success(`${product.name} removed from your wishlist`);
+      addToWishlist(product);
     }
   };
 
@@ -463,7 +467,7 @@ const Product = () => {
                       : 'border-gray-300 text-denim-600 hover:border-denim-400'
                   }`}
                   onClick={toggleWishlist}
-                  aria-label="Add to wishlist"
+                  aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
                 >
                   <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-pink-500' : ''}`} />
                 </Button>

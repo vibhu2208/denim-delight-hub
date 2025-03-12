@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
+import { useWishlist } from '@/context/WishlistContext';
 
 export interface Product {
   id: string;
@@ -32,9 +33,23 @@ interface ProductCardProps {
 const ProductCard = ({ product, index }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  
+  const isWishlisted = isInWishlist(product.id);
 
   const handleImageLoad = () => {
     setImageLoaded(true);
+  };
+
+  const toggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (isWishlisted) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product);
+    }
   };
 
   // Use image_url or fallback to image property for backward compatibility
@@ -65,10 +80,15 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
         </Link>
         
         <button 
-          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/700 backdrop-blur-sm text-denim-900 opacity-0 group-hover:opacity-100 transition-opacity"
-          aria-label="Add to wishlist"
+          className={`absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full
+            ${isWishlisted 
+              ? 'bg-pink-500 text-white' 
+              : 'bg-white/700 backdrop-blur-sm text-denim-900 opacity-0 group-hover:opacity-100'
+            } transition-all`}
+          onClick={toggleWishlist}
+          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
-          <Heart className="w-4 h-4" />
+          <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-white' : ''}`} />
         </button>
       </div>
       
