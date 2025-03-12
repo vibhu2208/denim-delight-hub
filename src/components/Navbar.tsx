@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, ShoppingCart, Menu, X, User } from 'lucide-react';
+import { Search, ShoppingCart, Menu, X, User, Heart } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { SearchInput } from './SearchInput';
@@ -108,6 +107,14 @@ const Navbar = () => {
                 </button>
                 
                 <Link 
+                  to="/wishlist"
+                  className="p-2 text-denim-800 hover:text-denim-600 transition-colors min-h-[44px] min-w-[44px]"
+                  aria-label="Wishlist"
+                >
+                  <Heart className="w-5 h-5" />
+                </Link>
+                
+                <Link 
                   to={user ? "/account" : "/login"} 
                   className={`p-2 text-denim-800 hover:text-denim-600 transition-colors min-h-[44px] min-w-[44px] ${
                     location.pathname === '/account' || location.pathname === '/login' ? 'text-denim-600' : ''
@@ -172,11 +179,9 @@ const Navbar = () => {
       )}
       
       {/* Mobile Menu */}
-      <div 
-        className={`fixed inset-0 bg-white z-40 transform transition-transform duration-300 ease-in-out ${
-          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:hidden`}
-      >
+      <div className={`fixed inset-0 bg-white z-40 transform transition-transform duration-300 ease-in-out ${
+        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+      } md:hidden`}>
         <div className="container mx-auto px-4 py-20">
           <div className="mb-6 px-2">
             <SearchInput onClose={() => setIsMobileMenuOpen(false)} isFullWidth={true} />
@@ -218,6 +223,12 @@ const Navbar = () => {
               className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors min-h-[44px] flex items-center"
             >
               Cart
+            </Link>
+            <Link 
+              to="/wishlist"
+              className="text-denim-800 hover:text-denim-600 text-lg font-medium transition-colors min-h-[44px] flex items-center"
+            >
+              Wishlist
             </Link>
           </nav>
         </div>
