@@ -1,218 +1,41 @@
+
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Heart, ShoppingCart, Star, Truck, RotateCcw, Shield } from 'lucide-react';
+import { Heart, ShoppingCart, Star, Truck, RotateCcw, Shield, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Button } from '@/components/ui/button';
-import { Product as ProductType } from '@/components/ProductCard';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
-
-const allProducts: ProductType[] = [
-  // Men's products
-  {
-    id: "1",
-    name: "Classic Straight Leg Jeans",
-    price: 89.99,
-    image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
-    image_url: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
-    hoverImage: "https://images.unsplash.com/photo-1475178626620-a4d074967452?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=986&q=80",
-    category: "men",
-    isBestSeller: true,
-    description: "Our classic straight leg jeans offer timeless style and all-day comfort. Made from premium denim with just the right amount of stretch, these jeans maintain their shape wear after wear. The straight leg cut provides a clean, versatile silhouette that pairs perfectly with everything in your wardrobe.",
-    details: [
-      "98% Cotton, 2% Elastane",
-      "Machine washable",
-      "Mid-rise waist",
-      "Straight leg fit",
-      "Button and zip fly closure",
-      "5-pocket styling"
-    ],
-    sizes: ["28", "30", "32", "34", "36", "38"],
-    reviews: 127,
-    rating: 4.8
-  },
-  {
-    id: "2",
-    name: "Relaxed Tapered Jeans",
-    price: 94.99,
-    image: "https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1009&q=80",
-    image_url: "https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1009&q=80",
-    hoverImage: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-    category: "men",
-    description: "Our relaxed tapered jeans combine laid-back comfort with a modern silhouette. The relaxed fit through the seat and thigh tapers down for a contemporary look. Made from premium heavyweight denim that gets better with every wear, these will quickly become your go-to jeans.",
-    details: [
-      "100% Cotton",
-      "Machine washable",
-      "Mid-rise waist",
-      "Relaxed fit with tapered leg",
-      "Button and zip fly closure",
-      "5-pocket styling"
-    ],
-    sizes: ["30", "32", "34", "36", "38"],
-    reviews: 94,
-    rating: 4.6
-  },
-  {
-    id: "3",
-    name: "Slim Fit Dark Wash Jeans",
-    price: 84.99,
-    image: "https://images.unsplash.com/photo-1530286910461-6a1960d1e83a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-    image_url: "https://images.unsplash.com/photo-1530286910461-6a1960d1e83a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-    category: "men",
-    isNew: true,
-    description: "Our slim fit dark wash jeans offer a sleek, modern silhouette. The deep indigo wash provides versatile styling options for both casual and dressier occasions. Made with premium stretch denim for all-day comfort that holds its shape.",
-    details: [
-      "94% Cotton, 5% Polyester, 1% Elastane",
-      "Machine washable",
-      "Mid-rise waist",
-      "Slim fit through hip and thigh",
-      "Button and zip fly closure",
-      "5-pocket styling"
-    ],
-    sizes: ["28", "30", "32", "34", "36"],
-    reviews: 68,
-    rating: 4.7
-  },
-  {
-    id: "4",
-    name: "Loose Fit Distressed Jeans",
-    price: 99.99,
-    image: "https://images.unsplash.com/photo-1590503033123-5d1fb3717b91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
-    image_url: "https://images.unsplash.com/photo-1590503033123-5d1fb3717b91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
-    category: "men",
-    description: "Our loose fit distressed jeans embody casual cool with authentic distressing and a relaxed silhouette. Each pair is uniquely worn and faded for a lived-in look. The loose fit provides maximum comfort for all-day wear, while the quality denim ensures durability.",
-    details: [
-      "100% Cotton",
-      "Machine washable",
-      "Mid-rise waist",
-      "Loose fit throughout",
-      "Button and zip fly closure",
-      "5-pocket styling",
-      "Distressed detailing"
-    ],
-    sizes: ["30", "32", "34", "36", "38", "40"],
-    reviews: 42,
-    rating: 4.5
-  },
-  // Women's products
-  {
-    id: "5",
-    name: "High-Rise Slim Fit Jeans",
-    price: 79.99,
-    image: "https://images.unsplash.com/photo-1584370848010-d7fe6bc767ec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
-    image_url: "https://images.unsplash.com/photo-1584370848010-d7fe6bc767ec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
-    hoverImage: "https://images.unsplash.com/photo-1608234807905-4466023792f5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=997&q=80",
-    category: "women",
-    isNew: true,
-    description: "Our high-rise slim fit jeans flatter and elongate your silhouette with a modern, feminine fit. The high rise sits comfortably at your natural waist, while the slim leg creates a sleek profile. Made with premium stretch denim for all-day comfort that holds its shape.",
-    details: [
-      "92% Cotton, 6% Polyester, 2% Elastane",
-      "Machine washable",
-      "High-rise waist",
-      "Slim fit throughout",
-      "Button and zip fly closure",
-      "5-pocket styling"
-    ],
-    sizes: ["24", "26", "27", "28", "29", "30", "31", "32"],
-    reviews: 152,
-    rating: 4.8
-  },
-  {
-    id: "6",
-    name: "Wide-Leg Cropped Jeans",
-    price: 84.99,
-    image: "https://images.unsplash.com/photo-1604176424472-17cd740f74e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
-    image_url: "https://images.unsplash.com/photo-1604176424472-17cd740f74e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
-    hoverImage: "https://images.unsplash.com/photo-1548615661-5d58c8af8d95?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2063&q=80",
-    category: "women",
-    isBestSeller: true,
-    description: "Our wide-leg cropped jeans make a stylish statement with their modern silhouette. The high-rise waist and wide-leg cut create a flattering, balanced proportion, while the cropped length showcases your favorite footwear. Made from structured denim with minimal stretch for an authentic feel.",
-    details: [
-      "99% Cotton, 1% Elastane",
-      "Machine washable",
-      "High-rise waist",
-      "Wide-leg fit",
-      "Cropped length",
-      "Button and zip fly closure",
-      "5-pocket styling"
-    ],
-    sizes: ["24", "25", "26", "27", "28", "29", "30", "31"],
-    reviews: 86,
-    rating: 4.7
-  },
-  {
-    id: "7",
-    name: "Skinny High-Waisted Jeans",
-    price: 74.99,
-    image: "https://images.unsplash.com/photo-1551854838-212c50b4c184?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
-    image_url: "https://images.unsplash.com/photo-1551854838-212c50b4c184?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
-    category: "women",
-    description: "Our skinny high-waisted jeans offer a second-skin fit that flatters your curves. The super stretchy denim provides exceptional comfort and recovery, maintaining its shape wear after wear. The high rise sits at your natural waist for a sleek, elongated silhouette.",
-    details: [
-      "91% Cotton, 7% Polyester, 2% Elastane",
-      "Machine washable",
-      "High-rise waist",
-      "Skinny fit throughout",
-      "Button and zip fly closure",
-      "5-pocket styling"
-    ],
-    sizes: ["24", "25", "26", "27", "28", "29", "30"],
-    reviews: 118,
-    rating: 4.6
-  },
-  {
-    id: "8",
-    name: "Mom Fit Vintage Jeans",
-    price: 89.99,
-    image: "https://images.unsplash.com/photo-1593091861575-0c2eab54a6fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
-    image_url: "https://images.unsplash.com/photo-1593091861575-0c2eab54a6fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
-    category: "women",
-    isNew: true,
-    description: "Our mom fit vintage jeans bring back the iconic 90s silhouette with a modern twist. The high waist and slightly tapered leg create a flattering vintage-inspired look. Made from rigid denim that softens with wear, these jeans develop a unique character that's all your own.",
-    details: [
-      "100% Cotton",
-      "Machine washable",
-      "High-rise waist",
-      "Relaxed through hip and thigh with tapered leg",
-      "Button and zip fly closure",
-      "5-pocket styling",
-      "Light distressing"
-    ],
-    sizes: ["24", "26", "27", "28", "29", "30", "31", "32"],
-    reviews: 74,
-    rating: 4.5
-  }
-];
+import { useJean } from '@/hooks/useJean';
+import ProductCard from '@/components/ProductCard';
+import { useJeans } from '@/hooks/useJeans';
 
 const Product = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
-  const [product, setProduct] = useState<ProductType | null>(null);
-  const [loading, setLoading] = useState(true);
+  
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState('');
 
+  // Fetch the product data from Supabase
+  const { data: product, isLoading, error } = useJean(id || '');
+  
+  // Fetch all products for similar products section
+  const { data: allProducts = [] } = useJeans();
+
+  // Set the main image when the product data is loaded
   useEffect(() => {
-    const foundProduct = allProducts.find(p => p.id === id);
-    
-    if (foundProduct) {
-      setProduct(foundProduct);
-      setMainImage(foundProduct.image);
+    if (product?.image_url) {
+      setMainImage(product.image_url);
     }
-    
-    setLoading(false);
-  }, [id]);
+  }, [product]);
 
-  useEffect(() => {
-    localStorage.setItem('allProducts', JSON.stringify(allProducts));
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-white">
         <Navbar />
@@ -240,7 +63,7 @@ const Product = () => {
     );
   }
 
-  if (!product) {
+  if (error || !product) {
     return (
       <div className="min-h-screen bg-white">
         <Navbar />
@@ -300,6 +123,7 @@ const Product = () => {
     setQuantity(quantity + 1);
   };
 
+  // Filter similar products by category
   const similarProducts = allProducts
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
@@ -321,101 +145,58 @@ const Product = () => {
                   />
                 </div>
                 
-                <div className="grid grid-cols-4 gap-2">
-                  <button 
-                    className={`bg-gray-50 rounded-md overflow-hidden ${mainImage === product.image ? 'ring-2 ring-denim-700' : ''}`}
-                    onClick={() => setMainImage(product.image)}
-                  >
-                    <img 
-                      src={product.image} 
-                      alt={product.name} 
-                      className="w-full h-auto object-cover aspect-square"
-                    />
-                  </button>
-                  
-                  {product.hoverImage && (
+                {product.image_url && (
+                  <div className="grid grid-cols-4 gap-2">
                     <button 
-                      className={`bg-gray-50 rounded-md overflow-hidden ${mainImage === product.hoverImage ? 'ring-2 ring-denim-700' : ''}`}
-                      onClick={() => setMainImage(product.hoverImage)}
+                      className={`bg-gray-50 rounded-md overflow-hidden ${mainImage === product.image_url ? 'ring-2 ring-denim-700' : ''}`}
+                      onClick={() => setMainImage(product.image_url || '')}
                     >
                       <img 
-                        src={product.hoverImage} 
-                        alt={`${product.name} alternate view`} 
+                        src={product.image_url} 
+                        alt={product.name} 
                         className="w-full h-auto object-cover aspect-square"
                       />
                     </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
             
             <div className="w-full lg:w-1/2">
-              <div className="flex justify-between items-center mb-4">
-                {product.isNew && (
-                  <span className="px-3 py-1 bg-denim-700 text-white font-medium text-xs uppercase tracking-wider rounded-full mr-2">
-                    New
-                  </span>
-                )}
-                {product.isBestSeller && (
-                  <span className="px-3 py-1 bg-amber-500 text-white font-medium text-xs uppercase tracking-wider rounded-full">
-                    Best Seller
-                  </span>
-                )}
-              </div>
-              
-              <h1 className="text-3xl font-display font-semibold text-denim-900 mb-2">{product.name}</h1>
-              
-              <div className="flex items-center mb-4">
-                <div className="flex">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star 
-                      key={star}
-                      className={`w-4 h-4 ${star <= Math.round(product.rating || 0) ? 'text-amber-400 fill-amber-400' : 'text-gray-300'}`}
-                    />
-                  ))}
-                </div>
-                <span className="ml-2 text-sm text-denim-600">
-                  {product.rating} ({product.reviews} reviews)
-                </span>
-              </div>
+              <h1 className="text-3xl font-display font-semibold text-denim-900 mb-4">{product.name}</h1>
               
               <p className="text-2xl font-medium text-denim-900 mb-6">${product.price.toFixed(2)}</p>
               
-              <div className="mb-8">
-                <p className="text-denim-600">{product.description}</p>
-              </div>
-              
-              <div className="mb-8">
-                <h3 className="text-lg font-medium text-denim-900 mb-2">Details</h3>
-                <ul className="list-disc list-inside space-y-1 text-denim-600">
-                  {product.details?.map((detail, index) => (
-                    <li key={index}>{detail}</li>
-                  ))}
-                </ul>
-              </div>
-              
-              <div className="mb-8">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-lg font-medium text-denim-900">Select Size</h3>
-                  <button className="text-denim-700 text-sm underline">Size Guide</button>
+              {product.description && (
+                <div className="mb-8">
+                  <p className="text-denim-600">{product.description}</p>
                 </div>
-                
-                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                  {product.sizes?.map((size) => (
-                    <button
-                      key={size}
-                      className={`py-2 rounded-md border ${
-                        selectedSize === size 
-                          ? 'border-denim-700 bg-denim-50 text-denim-900' 
-                          : 'border-gray-300 text-denim-600 hover:border-denim-400'
-                      } transition-colors min-h-[44px]`}
-                      onClick={() => setSelectedSize(size)}
-                    >
-                      {size}
-                    </button>
-                  ))}
+              )}
+              
+              {product.size && product.size.length > 0 && (
+                <div className="mb-8">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-lg font-medium text-denim-900">Select Size</h3>
+                    <button className="text-denim-700 text-sm underline">Size Guide</button>
+                  </div>
+                  
+                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                    {product.size.map((size) => (
+                      <button
+                        key={size}
+                        className={`py-2 rounded-md border ${
+                          selectedSize === size 
+                            ? 'border-denim-700 bg-denim-50 text-denim-900' 
+                            : 'border-gray-300 text-denim-600 hover:border-denim-400'
+                        } transition-colors min-h-[44px]`}
+                        onClick={() => setSelectedSize(size)}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
               
               <div className="mb-8">
                 <h3 className="text-lg font-medium text-denim-900 mb-2">Quantity</h3>
@@ -495,39 +276,7 @@ const Product = () => {
               <h2 className="text-2xl font-display font-semibold text-denim-900 mb-6">You May Also Like</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                 {similarProducts.map((product, index) => (
-                  <div 
-                    key={product.id}
-                    className="group animate-fade-in"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <div className="relative overflow-hidden rounded-lg bg-gray-100 mb-4">
-                      <a href={`/product/${product.id}`} className="block">
-                        <img 
-                          src={product.image} 
-                          alt={product.name}
-                          className="w-full h-auto object-cover aspect-[3/4] transition-transform duration-500 group-hover:scale-105"
-                        />
-                        
-                        {product.isNew && (
-                          <div className="absolute top-3 left-3 px-3 py-1 bg-white font-medium text-xs uppercase tracking-wider rounded-full">
-                            New
-                          </div>
-                        )}
-                        {product.isBestSeller && (
-                          <div className="absolute top-3 left-3 px-3 py-1 bg-denim-700 text-white font-medium text-xs uppercase tracking-wider rounded-full">
-                            Best Seller
-                          </div>
-                        )}
-                      </a>
-                    </div>
-                    
-                    <h3 className="font-medium text-denim-900 mb-1 transition-colors group-hover:text-denim-700">
-                      <a href={`/product/${product.id}`}>
-                        {product.name}
-                      </a>
-                    </h3>
-                    <p className="text-denim-700">${product.price.toFixed(2)}</p>
-                  </div>
+                  <ProductCard key={product.id} product={product} index={index} />
                 ))}
               </div>
             </div>
