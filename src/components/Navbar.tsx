@@ -106,23 +106,25 @@ const Navbar = () => {
                   <span className="sr-only">Search</span>
                 </button>
                 
-                <Link 
-                  to="/wishlist"
-                  className="p-2 text-denim-800 hover:text-denim-600 transition-colors min-h-[44px] min-w-[44px]"
-                  aria-label="Wishlist"
-                >
-                  <Heart className="w-5 h-5" />
-                </Link>
-                
-                <Link 
-                  to={user ? "/account" : "/login"} 
-                  className={`p-2 text-denim-800 hover:text-denim-600 transition-colors min-h-[44px] min-w-[44px] ${
-                    location.pathname === '/account' || location.pathname === '/login' ? 'text-denim-600' : ''
-                  }`}
-                  aria-label={user ? "My Account" : "Login"}
-                >
-                  <User className="w-5 h-5" />
-                </Link>
+                <div className="hidden md:flex items-center space-x-2 md:space-x-4">
+                  <Link 
+                    to="/wishlist"
+                    className="p-2 text-denim-800 hover:text-denim-600 transition-colors min-h-[44px] min-w-[44px]"
+                    aria-label="Wishlist"
+                  >
+                    <Heart className="w-5 h-5" />
+                  </Link>
+                  
+                  <Link 
+                    to={user ? "/account" : "/login"} 
+                    className={`p-2 text-denim-800 hover:text-denim-600 transition-colors min-h-[44px] min-w-[44px] ${
+                      location.pathname === '/account' || location.pathname === '/login' ? 'text-denim-600' : ''
+                    }`}
+                    aria-label={user ? "My Account" : "Login"}
+                  >
+                    <User className="w-5 h-5" />
+                  </Link>
+                </div>
                 
                 <Link 
                   to="/cart" 
