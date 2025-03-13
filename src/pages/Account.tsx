@@ -11,6 +11,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/components/ui/button';
 
 const Account = () => {
   const { user, logout } = useAuth();
@@ -111,15 +113,15 @@ const Account = () => {
               <div>
                 <p className="text-2xl font-semibold text-denim-900 mb-1">{wishlist.length}</p>
                 <p className="text-sm text-denim-600 mb-4">Saved Items</p>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full"
-                  as={Link}
+                <Link 
                   to="/wishlist"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" }),
+                    "w-full"
+                  )}
                 >
                   View Wishlist
-                </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -137,15 +139,15 @@ const Account = () => {
                 <p className="text-sm text-denim-600 mb-4">
                   You have {cartItems.length} item(s) in your cart
                 </p>
-                <Button 
-                  variant="default" 
-                  size="sm" 
-                  className="bg-denim-700 hover:bg-denim-800"
-                  as={Link}
+                <Link 
                   to="/cart"
+                  className={cn(
+                    buttonVariants({ variant: "default", size: "sm" }),
+                    "bg-denim-700 hover:bg-denim-800"
+                  )}
                 >
                   View Cart
-                </Button>
+                </Link>
               </div>
             ) : (
               <p className="text-sm text-denim-600">Your cart is empty</p>
@@ -157,14 +159,14 @@ const Account = () => {
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-medium text-denim-800">My Wishlist</h2>
               {wishlist.length > 0 && (
-                <Link to="/wishlist">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="text-sm"
-                  >
-                    View All
-                  </Button>
+                <Link 
+                  to="/wishlist"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" }),
+                    "text-sm"
+                  )}
+                >
+                  View All
                 </Link>
               )}
             </div>
@@ -177,15 +179,15 @@ const Account = () => {
               <div className="bg-gray-50 rounded-lg p-6 text-center">
                 <Heart className="h-12 w-12 mx-auto text-gray-300 mb-3" />
                 <p className="text-denim-700 mb-4">Your wishlist is empty</p>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  as={Link}
+                <Link 
                   to="/products"
-                  className="text-sm"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" }),
+                    "text-sm"
+                  )}
                 >
                   Explore Products
-                </Button>
+                </Link>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
