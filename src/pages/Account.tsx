@@ -1,17 +1,22 @@
 
 import { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { User, Package, Heart, LogOut } from 'lucide-react';
+import { User, Package, Heart, LogOut, Loader2, ShoppingBag } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ProductCard from '@/components/ProductCard';
+import { toast } from 'sonner';
 
 const Account = () => {
   const { user, logout } = useAuth();
   const { cartItems } = useCart();
+  const { wishlist, isLoading: wishlistLoading, removeFromWishlist } = useWishlist();
+  const { addToCart } = useCart();
   const [totalOrders, setTotalOrders] = useState(0);
   
   useEffect(() => {
@@ -24,6 +29,17 @@ const Account = () => {
   if (!user) {
     return <Navigate to="/login" replace />;
   }
+
+  const handleAddToCart = (productId: string) => {
+    const product = wishlist.find(item => item.id === productId);
+    if (product) {
+      // Add default size if available
+      const defaultSize = product.size?.[0] || product.sizes?.[0] || '';
+      
+      addToCart(product, 1, defaultSize);
+      toast.success(`${product.name} added to your cart`);
+    }
+  };
 
   return (
     <>
@@ -93,12 +109,14 @@ const Account = () => {
                 <h2 className="text-lg font-medium text-denim-800">Wishlist</h2>
               </div>
               <div>
-                <p className="text-2xl font-semibold text-denim-900 mb-1">0</p>
+                <p className="text-2xl font-semibold text-denim-900 mb-1">{wishlist.length}</p>
                 <p className="text-sm text-denim-600 mb-4">Saved Items</p>
                 <Button 
                   variant="outline" 
                   size="sm" 
                   className="w-full"
+                  as={Link}
+                  to="/wishlist"
                 >
                   View Wishlist
                 </Button>
@@ -123,13 +141,73 @@ const Account = () => {
                   variant="default" 
                   size="sm" 
                   className="bg-denim-700 hover:bg-denim-800"
-                  onClick={() => window.location.href = '/cart'}
+                  as={Link}
+                  to="/cart"
                 >
                   View Cart
                 </Button>
               </div>
             ) : (
               <p className="text-sm text-denim-600">Your cart is empty</p>
+            )}
+          </div>
+
+          {/* Wishlist Section */}
+          <div className="mt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-medium text-denim-800">My Wishlist</h2>
+              {wishlist.length > 0 && (
+                <Link to="/wishlist">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="text-sm"
+                  >
+                    View All
+                  </Button>
+                </Link>
+              )}
+            </div>
+
+            {wishlistLoading ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="h-8 w-8 animate-spin text-denim-600" />
+              </div>
+            ) : wishlist.length === 0 ? (
+              <div className="bg-gray-50 rounded-lg p-6 text-center">
+                <Heart className="h-12 w-12 mx-auto text-gray-300 mb-3" />
+                <p className="text-denim-700 mb-4">Your wishlist is empty</p>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  as={Link}
+                  to="/products"
+                  className="text-sm"
+                >
+                  Explore Products
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {wishlist.slice(0, 3).map((product, index) => (
+                  <div key={product.id} className="relative">
+                    <ProductCard 
+                      product={product} 
+                      index={index} 
+                    />
+                    <div className="mt-2 flex gap-2">
+                      <Button 
+                        onClick={() => handleAddToCart(product.id)}
+                        className="w-full text-xs bg-denim-800 hover:bg-denim-900"
+                        size="sm"
+                      >
+                        <ShoppingBag className="w-4 h-4 mr-1" />
+                        Add to Cart
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </div>

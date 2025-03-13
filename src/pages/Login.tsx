@@ -27,7 +27,8 @@ const Login = () => {
     
     try {
       await login(email, password);
-      navigate('/account');
+      // Redirect to home page after successful login
+      navigate('/', { replace: true });
     } catch (error) {
       // Error is already handled in the login function
     } finally {

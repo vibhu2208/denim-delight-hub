@@ -52,6 +52,11 @@ const Wishlist = () => {
     );
   }
 
+  // This check ensures we only render the content after verifying auth
+  if (!user) {
+    return null; // Effect will handle redirect
+  }
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
