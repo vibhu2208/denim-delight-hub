@@ -1,7 +1,7 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Heart, ShoppingCart } from 'lucide-react';
+import { Loader2, Heart, ShoppingBag } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useCart } from '@/context/CartContext';
@@ -16,25 +16,21 @@ const Wishlist = () => {
   const { wishlist, isLoading: wishlistLoading, removeFromWishlist } = useWishlist();
   const { addToCart } = useCart();
   const navigate = useNavigate();
-  const [selectedSize, setSelectedSize] = useState<string>('');
 
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
-      navigate('/login');
+      navigate('/login', { replace: true });
     }
   }, [user, authLoading, navigate]);
 
   const handleAddToCart = (productId: string) => {
     const product = wishlist.find(item => item.id === productId);
     if (product) {
-      // If product has sizes, make sure one is selected
-      if (product.size && product.size.length > 0 && !selectedSize) {
-        toast.error("Please select a size");
-        return;
-      }
-
-      addToCart(product, 1, selectedSize || product.size?.[0] || '');
+      // Add default size if available
+      const defaultSize = product.size?.[0] || product.sizes?.[0] || '';
+      
+      addToCart(product, 1, defaultSize);
       toast.success(`${product.name} added to your cart`);
       
       // Optionally remove from wishlist after adding to cart
@@ -79,15 +75,41 @@ const Wishlist = () => {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-              {wishlist.map((product, index) => (
-                <ProductCard 
-                  key={product.id} 
-                  product={product} 
-                  index={index} 
-                />
-              ))}
-            </div>
+            <>
+              <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <p className="text-denim-600">
+                  {wishlist.length} {wishlist.length === 1 ? 'item' : 'items'} in your wishlist
+                </p>
+                <Button 
+                  onClick={() => navigate('/products')}
+                  variant="outline" 
+                  className="border-denim-700 text-denim-700 hover:bg-denim-50"
+                >
+                  Continue Shopping
+                </Button>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                {wishlist.map((product, index) => (
+                  <div key={product.id} className="relative">
+                    <ProductCard 
+                      product={product} 
+                      index={index} 
+                    />
+                    <div className="mt-2 flex gap-2">
+                      <Button 
+                        onClick={() => handleAddToCart(product.id)}
+                        className="w-full text-xs bg-denim-800 hover:bg-denim-900"
+                        size="sm"
+                      >
+                        <ShoppingBag className="w-4 h-4 mr-1" />
+                        Add to Cart
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </main>

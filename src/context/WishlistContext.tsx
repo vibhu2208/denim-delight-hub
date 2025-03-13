@@ -11,6 +11,7 @@ interface WishlistContextType {
   isInWishlist: (productId: string) => boolean;
   addToWishlist: (product: Product) => Promise<void>;
   removeFromWishlist: (productId: string) => Promise<void>;
+  wishlistCount: number;
 }
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
@@ -20,6 +21,9 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
 
+  // Compute wishlist count
+  const wishlistCount = wishlist.length;
+
   // Load wishlist from localStorage or Supabase on component mount
   useEffect(() => {
     const loadWishlist = async () => {
@@ -28,28 +32,78 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
       try {
         if (user) {
           // User is logged in, fetch wishlist from Supabase
-          const { data, error } = await supabase
+          const { data: wishlistItems, error: wishlistError } = await supabase
             .from('wishlists')
             .select('product_id')
             .eq('user_id', user.id);
 
-          if (error) {
-            throw error;
+          if (wishlistError) {
+            throw wishlistError;
           }
 
-          if (data && data.length > 0) {
+          if (wishlistItems && wishlistItems.length > 0) {
             // Get product details for each wishlist item
-            const productIds = data.map(item => item.product_id);
+            const productIds = wishlistItems.map(item => item.product_id);
             
-            // In a real app, you would fetch product details from your products table
-            // For now, we'll use the mock data from localStorage or fetch from the products hardcoded data
-            const allProducts = JSON.parse(localStorage.getItem('allProducts') || '[]');
+            // Fetch products from products table
+            const { data: productsData, error: productsError } = await supabase
+              .from('products')
+              .select('*')
+              .in('id', productIds);
+              
+            // Fetch products from jeans table
+            const { data: jeansData, error: jeansError } = await supabase
+              .from('jeans')
+              .select('*')
+              .in('id', productIds);
             
-            const wishlistProducts = allProducts.filter((product: Product) => 
-              productIds.includes(product.id)
-            );
+            if (productsError && jeansError) {
+              console.error('Error fetching products:', productsError);
+              console.error('Error fetching jeans:', jeansError);
+              toast.error('Failed to load wishlist items');
+              setWishlist([]);
+              setIsLoading(false);
+              return;
+            }
             
-            setWishlist(wishlistProducts);
+            // Combine products from both tables
+            const allProducts: Product[] = [];
+            
+            // Add products from products table
+            if (productsData) {
+              productsData.forEach(product => {
+                allProducts.push({
+                  id: product.id,
+                  name: product.name,
+                  price: product.price,
+                  image_url: product.image_url,
+                  image: product.image_url, // For backward compatibility
+                  category: product.category,
+                  description: product.description || undefined,
+                  size: product.sizes || [],
+                  sizes: product.sizes || [],
+                });
+              });
+            }
+            
+            // Add products from jeans table
+            if (jeansData) {
+              jeansData.forEach(jean => {
+                allProducts.push({
+                  id: jean.id,
+                  name: jean.name,
+                  price: jean.price,
+                  image_url: jean.image_url,
+                  image: jean.image_url, // For backward compatibility
+                  category: jean.category || '',
+                  description: jean.description || undefined,
+                  size: jean.size || [],
+                  sizes: jean.size || [],
+                });
+              });
+            }
+            
+            setWishlist(allProducts);
           } else {
             setWishlist([]);
           }
@@ -143,7 +197,8 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
       isLoading, 
       isInWishlist, 
       addToWishlist, 
-      removeFromWishlist 
+      removeFromWishlist,
+      wishlistCount
     }}>
       {children}
     </WishlistContext.Provider>

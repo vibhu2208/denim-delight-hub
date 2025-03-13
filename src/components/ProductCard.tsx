@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import { useWishlist } from '@/context/WishlistContext';
+import { Badge } from '@/components/ui/badge';
 
 export interface Product {
   id: string;
@@ -75,6 +76,24 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
             />
             {!imageLoaded && (
               <div className="absolute inset-0 bg-gray-200 animate-pulse"></div>
+            )}
+            
+            {product.isNew && (
+              <Badge 
+                className="absolute top-3 left-3 bg-denim-700 text-white"
+                variant="default"
+              >
+                New
+              </Badge>
+            )}
+            
+            {product.isBestSeller && (
+              <Badge 
+                className="absolute top-3 left-3 bg-amber-500 text-white"
+                variant="default"
+              >
+                Best Seller
+              </Badge>
             )}
           </div>
         </Link>
