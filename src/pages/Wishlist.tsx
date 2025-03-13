@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Heart, ShoppingCart } from 'lucide-react';
+import { Loader2, Heart, ShoppingCart, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useCart } from '@/context/CartContext';
@@ -10,6 +10,7 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import ProductCard from '@/components/ProductCard';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const Wishlist = () => {
   const { user, loading: authLoading } = useAuth();
@@ -37,19 +38,34 @@ const Wishlist = () => {
       addToCart(product, 1, selectedSize || product.size?.[0] || '');
       toast.success(`${product.name} added to your cart`);
       
-      // Optionally remove from wishlist after adding to cart
-      // removeFromWishlist(productId);
+      // Optional: remove from wishlist after adding to cart
+      removeFromWishlist(productId);
     }
+  };
+
+  const handleRemoveFromWishlist = (productId: string, productName: string) => {
+    removeFromWishlist(productId);
+    toast.success(`${productName} removed from your wishlist`);
   };
 
   const isLoading = authLoading || wishlistLoading;
 
+  // Render loading skeletons
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white">
         <Navbar />
-        <div className="container mx-auto px-4 py-20 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-denim-600" />
+        <div className="container mx-auto px-4 py-20">
+          <h1 className="text-3xl font-display font-semibold text-denim-900 mb-6">My Wishlist</h1>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {Array(4).fill(0).map((_, index) => (
+              <div key={index} className="space-y-3">
+                <Skeleton className="h-64 w-full rounded-lg" />
+                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className="h-4 w-1/3" />
+              </div>
+            ))}
+          </div>
         </div>
         <Footer />
       </div>
@@ -79,14 +95,37 @@ const Wishlist = () => {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-              {wishlist.map((product, index) => (
-                <ProductCard 
-                  key={product.id} 
-                  product={product} 
-                  index={index} 
-                />
-              ))}
+            <div>
+              <p className="text-denim-600 mb-6">{wishlist.length} {wishlist.length === 1 ? 'item' : 'items'} in your wishlist</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                {wishlist.map((product, index) => (
+                  <div key={product.id} className="group relative animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <ProductCard 
+                      product={product} 
+                      index={index} 
+                    />
+                    <div className="mt-2 flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full text-xs h-8 border-denim-700 text-denim-700"
+                        onClick={() => handleAddToCart(product.id)}
+                      >
+                        <ShoppingCart className="h-3.5 w-3.5 mr-1" />
+                        Add to Cart
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 border-pink-500 text-pink-500 rounded-md"
+                        onClick={() => handleRemoveFromWishlist(product.id, product.name)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>

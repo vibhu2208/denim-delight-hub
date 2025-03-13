@@ -20,7 +20,7 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
 
-  // Load wishlist from localStorage or Supabase on component mount
+  // Load wishlist from localStorage or Supabase on component mount or user change
   useEffect(() => {
     const loadWishlist = async () => {
       setIsLoading(true);
@@ -30,7 +30,11 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
           // User is logged in, fetch wishlist from Supabase
           const { data, error } = await supabase
             .from('wishlists')
-            .select('product_id')
+            .select(`
+              product_id,
+              products!inner(id, name, price, image_url, category, description, sizes),
+              jeans!inner(id, name, price, image_url, category, description, size)
+            `)
             .eq('user_id', user.id);
 
           if (error) {
@@ -38,18 +42,26 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
           }
 
           if (data && data.length > 0) {
-            // Get product details for each wishlist item
-            const productIds = data.map(item => item.product_id);
+            // Process data from products and jeans tables
+            const wishlistItems = data.map(item => {
+              // Check if the product comes from products or jeans table
+              const productData = item.products || item.jeans;
+              if (!productData) return null;
+              
+              return {
+                id: productData.id,
+                name: productData.name,
+                price: productData.price,
+                image_url: productData.image_url,
+                category: productData.category,
+                description: productData.description,
+                // Handle different naming conventions between tables
+                size: productData.size || productData.sizes,
+                // Add any other needed fields
+              };
+            }).filter(Boolean) as Product[];
             
-            // In a real app, you would fetch product details from your products table
-            // For now, we'll use the mock data from localStorage or fetch from the products hardcoded data
-            const allProducts = JSON.parse(localStorage.getItem('allProducts') || '[]');
-            
-            const wishlistProducts = allProducts.filter((product: Product) => 
-              productIds.includes(product.id)
-            );
-            
-            setWishlist(wishlistProducts);
+            setWishlist(wishlistItems);
           } else {
             setWishlist([]);
           }
@@ -104,11 +116,9 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
       if (!isInWishlist(product.id)) {
         setWishlist(prev => [...prev, product]);
       }
-      
-      toast.success(`${product.name} added to your wishlist`);
     } catch (error) {
       console.error('Error adding to wishlist:', error);
-      toast.error('Failed to add to wishlist');
+      throw error;
     }
   };
 
@@ -130,10 +140,9 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
       
       // Update local state
       setWishlist(prev => prev.filter(item => item.id !== productId));
-      toast.success('Removed from your wishlist');
     } catch (error) {
       console.error('Error removing from wishlist:', error);
-      toast.error('Failed to remove from wishlist');
+      throw error;
     }
   };
 

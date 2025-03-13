@@ -1,8 +1,11 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart } from 'lucide-react';
+import { Heart, Loader2 } from 'lucide-react';
 import { useWishlist } from '@/context/WishlistContext';
+import { toast } from 'sonner';
+import { useAuth } from '@/context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export interface Product {
   id: string;
@@ -33,7 +36,10 @@ interface ProductCardProps {
 const ProductCard = ({ product, index }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isWishlistLoading, setIsWishlistLoading] = useState(false);
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   
   const isWishlisted = isInWishlist(product.id);
 
@@ -41,14 +47,32 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
     setImageLoaded(true);
   };
 
-  const toggleWishlist = (e: React.MouseEvent) => {
+  const toggleWishlist = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
-    if (isWishlisted) {
-      removeFromWishlist(product.id);
-    } else {
-      addToWishlist(product);
+    if (!user) {
+      // Redirect to login if not authenticated
+      toast.info("Please log in to save items to your wishlist");
+      navigate('/login');
+      return;
+    }
+    
+    setIsWishlistLoading(true);
+    
+    try {
+      if (isWishlisted) {
+        await removeFromWishlist(product.id);
+        toast.success(`${product.name} removed from your wishlist`);
+      } else {
+        await addToWishlist(product);
+        toast.success(`${product.name} added to your wishlist`);
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+      console.error("Wishlist action error:", error);
+    } finally {
+      setIsWishlistLoading(false);
     }
   };
 
@@ -86,9 +110,14 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
               : 'bg-white/700 backdrop-blur-sm text-denim-900 opacity-0 group-hover:opacity-100'
             } transition-all`}
           onClick={toggleWishlist}
+          disabled={isWishlistLoading}
           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
-          <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-white' : ''}`} />
+          {isWishlistLoading ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-white' : ''}`} />
+          )}
         </button>
       </div>
       
