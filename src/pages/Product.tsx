@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, Star, Truck, RotateCcw, Shield, Loader2 } from 'lucide-react';
@@ -24,13 +23,9 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState('');
 
-  // Fetch the product data from Supabase
   const { data: product, isLoading, error } = useJean(id || '');
-  
-  // Fetch all products for similar products section
   const { data: allProducts = [] } = useJeans();
 
-  // Set the main image when the product data is loaded
   useEffect(() => {
     if (product?.image_url) {
       setMainImage(product.image_url);
@@ -125,7 +120,6 @@ const Product = () => {
     setQuantity(quantity + 1);
   };
 
-  // Filter similar products by category
   const similarProducts = allProducts
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
@@ -265,7 +259,6 @@ const Product = () => {
                 </div>
               </div>
               
-              {/* Product Details Collapsible Sections */}
               <div className="mt-8 mb-10">
                 <CollapsibleSection title="Specifications" defaultOpen={true}>
                   <dl className="grid grid-cols-2 gap-x-4 gap-y-2">
