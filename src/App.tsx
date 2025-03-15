@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +19,20 @@ import Account from "./pages/Account";
 import Search from "./pages/Search";
 import Wishlist from "./pages/Wishlist";
 import NotFound from "./pages/NotFound";
+
+// Company Section Pages
+import AboutUs from "./pages/company/AboutUs";
+import Sustainability from "./pages/company/Sustainability";
+import StoreLocator from "./pages/company/StoreLocator";
+import Careers from "./pages/company/Careers";
+import ContactUs from "./pages/company/ContactUs";
+
+// Customer Service Section Pages
+import HelpCenter from "./pages/customer-service/HelpCenter";
+import ShippingAndReturns from "./pages/customer-service/ShippingAndReturns";
+import SizeGuide from "./pages/customer-service/SizeGuide";
+import PrivacyPolicy from "./pages/customer-service/PrivacyPolicy";
+import TermsAndConditions from "./pages/customer-service/TermsAndConditions";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +57,21 @@ const App = () => (
                 <Route path="/account" element={<Account />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/wishlist" element={<Wishlist />} />
+                
+                {/* Company Section Routes */}
+                <Route path="/about" element={<AboutUs />} />
+                <Route path="/sustainability" element={<Sustainability />} />
+                <Route path="/stores" element={<StoreLocator />} />
+                <Route path="/careers" element={<Careers />} />
+                <Route path="/contact" element={<ContactUs />} />
+                
+                {/* Customer Service Section Routes */}
+                <Route path="/help" element={<HelpCenter />} />
+                <Route path="/shipping" element={<ShippingAndReturns />} />
+                <Route path="/size-guide" element={<SizeGuide />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsAndConditions />} />
+                
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
