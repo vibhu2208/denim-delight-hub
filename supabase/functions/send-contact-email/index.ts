@@ -37,7 +37,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Send email to recipient (your email)
     const emailResponse = await resend.emails.send({
       from: "Contact Form <onboarding@resend.dev>",
-      to: ["vaibahvsingh5373@gmail.com"], // Your email address
+      to: ["vaibhavsingh5373@gmail.com"], // Corrected email address
       subject: `New Contact Form Message: ${subject}`,
       html: `
         <h1>New Message from Contact Form</h1>
